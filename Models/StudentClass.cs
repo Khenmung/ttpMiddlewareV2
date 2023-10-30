@@ -18,7 +18,7 @@ namespace ttpMiddleware.Models
             Attendances = new HashSet<Attendance>();
             ExamResultSubjectMarks = new HashSet<ExamResultSubjectMark>();
             ExamStudentResults = new HashSet<ExamStudentResult>();
-            FeePaymentAndStatuses = new HashSet<FeePaymentAndStatus>();
+            FeePaymentRelateds = new HashSet<FeePaymentRelated>();
             GroupActivityParticipants = new HashSet<GroupActivityParticipant>();
             StorageFnPs = new HashSet<StorageFnP>();
             StudentActivities = new HashSet<StudentActivity>();
@@ -87,8 +87,8 @@ namespace ttpMiddleware.Models
         public virtual ICollection<ExamResultSubjectMark> ExamResultSubjectMarks { get; set; }
         [InverseProperty(nameof(ExamStudentResult.StudentClass))]
         public virtual ICollection<ExamStudentResult> ExamStudentResults { get; set; }
-        [InverseProperty(nameof(FeePaymentAndStatus.StudentClass))]
-        public virtual ICollection<FeePaymentAndStatus> FeePaymentAndStatuses { get; set; }
+        [InverseProperty(nameof(FeePaymentRelated.StudentClass))]
+        public virtual ICollection<FeePaymentRelated> FeePaymentRelateds { get; set; }
         [InverseProperty(nameof(GroupActivityParticipant.StudentClass))]
         public virtual ICollection<GroupActivityParticipant> GroupActivityParticipants { get; set; }
         [InverseProperty(nameof(StorageFnP.StudentClass))]

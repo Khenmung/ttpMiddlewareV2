@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Table("FeePaymentAndStatus")]
-    public partial class FeePaymentAndStatus
+    [Table("FeePaymentRelated")]
+    public partial class FeePaymentRelated
     {
         [Key]
-        public int FeepaymentAndStatusId { get; set; }
+        public int FeePaymentRelatedId { get; set; }
         public int StudentClassId { get; set; }
         public int FeepaymentStatusId { get; set; }
         public short OrgId { get; set; }
@@ -28,9 +28,12 @@ namespace ttpMiddleware.Models
         public string CreatedBy { get; set; }
         [StringLength(450)]
         public string UpdatedBy { get; set; }
+        public int SectionId { get; set; }
+        public int SemesterId { get; set; }
+        public int ClassId { get; set; }
 
         [ForeignKey(nameof(StudentClassId))]
-        [InverseProperty("FeePaymentAndStatuses")]
+        [InverseProperty("FeePaymentRelateds")]
         public virtual StudentClass StudentClass { get; set; }
     }
 }

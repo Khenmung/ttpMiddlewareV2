@@ -79,7 +79,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<ExamStudentResult> ExamStudentResults { get; set; }
         public virtual DbSet<ExamStudentSubjectResult> ExamStudentSubjectResults { get; set; }
         public virtual DbSet<FeeDefinition> FeeDefinitions { get; set; }
-        public virtual DbSet<FeePaymentAndStatus> FeePaymentAndStatuses { get; set; }
+        public virtual DbSet<FeePaymentRelated> FeePaymentRelateds { get; set; }
         public virtual DbSet<GeneralLedger> GeneralLedgers { get; set; }
         public virtual DbSet<GeneratedCertificate> GeneratedCertificates { get; set; }
         public virtual DbSet<GroupActivityParticipant> GroupActivityParticipants { get; set; }
@@ -1238,12 +1238,12 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_FeeMaster_MasterItemsFeeTypeId");
             });
 
-            modelBuilder.Entity<FeePaymentAndStatus>(entity =>
+            modelBuilder.Entity<FeePaymentRelated>(entity =>
             {
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.StudentClass)
-                    .WithMany(p => p.FeePaymentAndStatuses)
+                    .WithMany(p => p.FeePaymentRelateds)
                     .HasForeignKey(d => d.StudentClassId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FeePaymentAndStatus_StudentClass");

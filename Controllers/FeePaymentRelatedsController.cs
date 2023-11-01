@@ -140,7 +140,7 @@ namespace ttpMiddleware.Controllers
                 }
                 await _context.SaveChangesAsync();
                 tran.Commit();
-                return Ok();
+                return Ok(_feePaymentRelated);
             }
             catch(Exception ex)
             {

@@ -128,8 +128,8 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<CertificateConfig>("CertificateConfigs");
             builder.EntitySet<SyllabusDetail>("SyllabusDetails");
             builder.EntitySet<EmployeeActivity>("EmployeeActivities");
-            builder.EntitySet<EmployeeGroupActivityParticipant>("EmployeeGroupActivityParticipants");
-            builder.EntitySet<EmployeeGeneratedCertificate>("EmployeeGeneratedCertificates");
+            //builder.EntitySet<EmployeeGroupActivityParticipant>("EmployeeGroupActivityParticipants");
+            //builder.EntitySet<EmployeeGeneratedCertificate>("EmployeeGeneratedCertificates");
             builder.EntitySet<ExamMarkConfig>("ExamMarkConfigs");
             builder.EntitySet<ExamClassGroupMap>("ExamClassGroupMaps");
             builder.EntitySet<EmployeeAttendance>("EmployeeAttendances");

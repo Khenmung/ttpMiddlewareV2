@@ -16,6 +16,7 @@ namespace ttpMiddleware.Models
         public short ExamClassGroupMapId { get; set; }
         public short ExamId { get; set; }
         public short ClassGroupId { get; set; }
+        public decimal MarkConvertTo { get; set; }        
         public bool Active { get; set; }
         public short OrgId { get; set; }
         public bool Deleted { get; set; }

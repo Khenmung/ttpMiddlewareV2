@@ -410,7 +410,7 @@ namespace ttpMiddleware.Controllers
             builder.EntitySet<SyllabusDetail>("SyllabusDetails");
             builder.EntitySet<EmployeeActivity>("EmployeeActivities");
             builder.EntitySet<EmployeeGroupActivityParticipant>("EmployeeGroupActivityParticipants");
-            builder.EntitySet<EmployeeGeneratedCertificate>("EmployeeGeneratedCertificates");
+            //builder.EntitySet<EmployeeGeneratedCertificate>("EmployeeGeneratedCertificates");
             builder.EntitySet<ExamMarkConfig>("ExamMarkConfigs");
             builder.EntitySet<ExamClassGroupMap>("ExamClassGroupMaps");
             builder.EntitySet<EmployeeAttendance>("EmployeeAttendances");

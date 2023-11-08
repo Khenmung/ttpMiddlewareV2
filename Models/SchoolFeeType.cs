@@ -24,7 +24,7 @@ namespace ttpMiddleware.Models
         [StringLength(256)]
         public string Description { get; set; }
         [Required]
-        [StringLength(256)]
+        [StringLength(600)]
         public string Formula { get; set; }
         public byte DefaultType { get; set; }
         public bool Confidential { get; set; }

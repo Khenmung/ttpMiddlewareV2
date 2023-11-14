@@ -116,13 +116,12 @@ using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
         {
 
             var _existing = await _context.Attendances.Where(x =>
-            ( x.ClassSubjectId == attendance.ClassSubjectId && x.StudentClassId == attendance.StudentClassId && attendance.StudentClassId>0
-            && ((DateTime)x.AttendanceDate).Date== ((DateTime)attendance.AttendanceDate).Date            
-            ||
-            (x.TeacherId == attendance.TeacherId && attendance.TeacherId>0
-            && ((DateTime)x.AttendanceDate).Date == ((DateTime)attendance.AttendanceDate).Date))
+            x.ClassSubjectId == attendance.ClassSubjectId 
+            && x.StudentClassId == attendance.StudentClassId 
+            && ((DateTime)x.AttendanceDate).Date== ((DateTime)attendance.AttendanceDate).Date
             && x.SubOrgId == attendance.SubOrgId
             && x.OrgId == attendance.OrgId
+            && x.Deleted ==false
             ).ToListAsync();
             if (_existing.Count > 0)
             {

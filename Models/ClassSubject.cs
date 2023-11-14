@@ -31,6 +31,7 @@ namespace ttpMiddleware.Models
         public int? SubjectCategoryId { get; set; }
         public byte? Credits { get; set; }
         public int? TeacherId { get; set; }
+        public int RemarkId { get; set; }
         public bool? Confidential { get; set; }
         public byte Active { get; set; }
         public short OrgId { get; set; }

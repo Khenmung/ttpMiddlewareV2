@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ttpMiddleware.Models;
@@ -15,27 +13,27 @@ namespace ttpMiddleware.Controllers
 {
     [ODataRoutePrefix("[controller]")]
     [EnableQuery]
-    public class FeePaymentRelatedsController : ProtectedController
+    public class StudentStatusesController : ProtectedController
     {
         private readonly ttpauthContext _context;
 
-        public FeePaymentRelatedsController(ttpauthContext context)
+        public StudentStatusesController(ttpauthContext context)
         {
             _context = context;
         }
 
         // GET: api/FeePaymentRelateds
         [HttpGet]
-        public IQueryable<FeePaymentRelated> GetFeePaymentRelateds()
+        public IQueryable<StudentStatus> GetStudentStatuses()
         {
-            return _context.FeePaymentRelateds.AsQueryable().AsNoTracking();
+            return _context.StudentStatuses.AsQueryable().AsNoTracking();
         }
 
         // GET: api/FeePaymentRelateds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<FeePaymentRelated>> GetFeePaymentRelated(int id)
+        public async Task<ActionResult<StudentStatus>> GetStudentStatus(int id)
         {
-            var feePaymentRelated = await _context.FeePaymentRelateds.FindAsync(id);
+            var feePaymentRelated = await _context.StudentStatuses.FindAsync(id);
 
             if (feePaymentRelated == null)
             {
@@ -48,14 +46,14 @@ namespace ttpMiddleware.Controllers
         // PUT: api/FeePaymentRelateds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFeePaymentRelated(int id, FeePaymentRelated feePaymentRelated)
+        public async Task<IActionResult> PutStudentStatus(int id, StudentStatus studentStatus)
         {
-            if (id != feePaymentRelated.FeePaymentRelatedId)
+            if (id != studentStatus.StudentStatusId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(feePaymentRelated).State = EntityState.Modified;
+            _context.Entry(studentStatus).State = EntityState.Modified;
 
             try
             {
@@ -63,7 +61,7 @@ namespace ttpMiddleware.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FeePaymentRelatedExists(id))
+                if (!StudentStatusesExists(id))
                 {
                     return NotFound();
                 }
@@ -75,25 +73,25 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<FeePaymentRelated> feePaymentRelated)
+        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<StudentStatus> studentStatus)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entity = await _context.FeePaymentRelateds.FindAsync(key);
+            var entity = await _context.StudentStatuses.FindAsync(key);
             if (entity == null)
             {
                 return NotFound();
             }
-            feePaymentRelated.Patch(entity);
+            studentStatus.Patch(entity);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FeePaymentRelatedExists(key))
+                if (!StudentStatusesExists(key))
                 {
                     return NotFound();
                 }
@@ -108,39 +106,39 @@ namespace ttpMiddleware.Controllers
         // POST: api/FeePaymentRelateds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<FeePaymentRelated>> PostFeePaymentRelated([FromBody] JArray jsonWrapper)
+        public async Task<ActionResult<StudentStatus>> PostStudentStatus([FromBody] JArray jsonWrapper)
         {
             //var _errormessage = "";
 
 
             JToken jsonValues = jsonWrapper;
-            FeePaymentRelated _feePaymentRelated = new FeePaymentRelated();
+            StudentStatus _StudentStatus = new StudentStatus();
             using var tran = _context.Database.BeginTransaction();
             try
             {
              
                 foreach (var x in jsonValues)
                 {
-                    _feePaymentRelated = x.ToObject<FeePaymentRelated>();
-                    if(_feePaymentRelated.FeePaymentRelatedId==0)
-                    _context.FeePaymentRelateds.Add(_feePaymentRelated);
+                    _StudentStatus = x.ToObject<StudentStatus>();
+                    if(_StudentStatus.StudentStatusId==0)
+                    _context.StudentStatuses.Add(_StudentStatus);
                     else
                     {
-                        var related = _context.FeePaymentRelateds.Where(x => x.FeePaymentRelatedId == _feePaymentRelated.FeePaymentRelatedId
-                        && x.OrgId== _feePaymentRelated.OrgId
-                        && x.SubOrgId== _feePaymentRelated.SubOrgId);
+                        var related = _context.StudentStatuses.Where(x => x.StudentStatusId == _StudentStatus.StudentStatusId
+                        && x.OrgId== _StudentStatus.OrgId
+                        && x.SubOrgId== _StudentStatus.SubOrgId);
 
                         foreach(var item in related)
                         {
-                            item.FeepaymentStatusId = _feePaymentRelated.FeepaymentStatusId;
-                            item.Active = _feePaymentRelated.Active;
+                            item.StudentStatusId = _StudentStatus.StudentStatusId;
+                            item.Active = _StudentStatus.Active;
                             _context.Update(item);
                         }
                     }
                 }
                 await _context.SaveChangesAsync();
                 tran.Commit();
-                return Ok(_feePaymentRelated);
+                return Ok(_StudentStatus);
             }
             catch(Exception ex)
             {
@@ -151,23 +149,23 @@ namespace ttpMiddleware.Controllers
 
         // DELETE: api/FeePaymentRelateds/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFeePaymentRelated(int id)
+        public async Task<IActionResult> DeleteStudentStatuses(int id)
         {
-            var feePaymentRelated = await _context.FeePaymentRelateds.FindAsync(id);
+            var feePaymentRelated = await _context.StudentStatuses.FindAsync(id);
             if (feePaymentRelated == null)
             {
                 return NotFound();
             }
 
-            _context.FeePaymentRelateds.Remove(feePaymentRelated);
+            _context.StudentStatuses.Remove(feePaymentRelated);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool FeePaymentRelatedExists(int id)
+        private bool StudentStatusesExists(int id)
         {
-            return _context.FeePaymentRelateds.Any(e => e.FeePaymentRelatedId == id);
+            return _context.StudentStatuses.Any(e => e.StudentStatusId == id);
         }
     }
 }

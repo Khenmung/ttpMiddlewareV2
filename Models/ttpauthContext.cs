@@ -79,7 +79,6 @@ namespace ttpMiddleware.Models
         public virtual DbSet<ExamStudentResult> ExamStudentResults { get; set; }
         public virtual DbSet<ExamStudentSubjectResult> ExamStudentSubjectResults { get; set; }
         public virtual DbSet<FeeDefinition> FeeDefinitions { get; set; }
-        public virtual DbSet<FeePaymentRelated> FeePaymentRelateds { get; set; }
         public virtual DbSet<GeneralLedger> GeneralLedgers { get; set; }
         public virtual DbSet<GeneratedCertificate> GeneratedCertificates { get; set; }
         public virtual DbSet<GroupActivityParticipant> GroupActivityParticipants { get; set; }
@@ -128,6 +127,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<StudentFamilyNFriend> StudentFamilyNFriends { get; set; }
         public virtual DbSet<StudentFeeReceipt> StudentFeeReceipts { get; set; }
         public virtual DbSet<StudentGrade> StudentGrades { get; set; }
+        public virtual DbSet<StudentStatus> StudentStatuses { get; set; }
         public virtual DbSet<SubjectComponent> SubjectComponents { get; set; }
         public virtual DbSet<SubjectType> SubjectTypes { get; set; }
         public virtual DbSet<SyllabusDetail> SyllabusDetails { get; set; }
@@ -1238,17 +1238,6 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_FeeMaster_MasterItemsFeeTypeId");
             });
 
-            modelBuilder.Entity<FeePaymentRelated>(entity =>
-            {
-                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.StudentClass)
-                    .WithMany(p => p.FeePaymentRelateds)
-                    .HasForeignKey(d => d.StudentClassId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FeePaymentAndStatus_StudentClass");
-            });
-
             modelBuilder.Entity<GeneralLedger>(entity =>
             {
                 entity.Property(e => e.Address).IsUnicode(false);
@@ -2289,6 +2278,17 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.SubjectCategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_StudentGrade_MasterItems");
+            });
+
+            modelBuilder.Entity<StudentStatus>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.StudentClass)
+                    .WithMany(p => p.StudentStatuses)
+                    .HasForeignKey(d => d.StudentClassId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FeePaymentAndStatus_StudentClass");
             });
 
             modelBuilder.Entity<SubjectComponent>(entity =>

@@ -54,6 +54,7 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public int SubOrgId { get; set; }
+        public int WithHeldResultStatusId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("Exams")]

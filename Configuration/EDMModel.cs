@@ -138,7 +138,7 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<EmpEmployeeSalaryComponent>("EmpEmployeeSalaryComponents");
             builder.EntitySet<EvaluationResultMark>("EvaluationResultMarks");
             //builder.EntitySet<SubjectComponent>("SubjectComponents");
-            builder.EntitySet<FeePaymentRelated>("FeePaymentRelateds");
+            builder.EntitySet<StudentStatus>("StudentStatuses");
 
             return builder.GetEdmModel();
         }

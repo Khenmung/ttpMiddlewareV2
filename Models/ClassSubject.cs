@@ -31,7 +31,6 @@ namespace ttpMiddleware.Models
         public int? SubjectCategoryId { get; set; }
         public byte? Credits { get; set; }
         public int? TeacherId { get; set; }
-        public int RemarkId { get; set; }
         public bool? Confidential { get; set; }
         public byte Active { get; set; }
         public short OrgId { get; set; }
@@ -48,6 +47,7 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public int SectionId { get; set; }
         public int SemesterId { get; set; }
+        public int RemarkId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("ClassSubjects")]

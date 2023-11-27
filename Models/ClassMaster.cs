@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), Name = "classmaster")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), nameof(ClassId), nameof(ClassName), nameof(Sequence), Name = "classmaster")]
     public partial class ClassMaster
     {
         public ClassMaster()

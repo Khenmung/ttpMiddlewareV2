@@ -8,18 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Table("StudentStatus")]
-    public partial class StudentStatus
+    [Table("StudentStature")]
+    public partial class StudentStature
     {
         [Key]
-        public int StudentStatusId { get; set; }
+        public int StudentStatureId { get; set; }
         public int StudentClassId { get; set; }
+        public short ClassId { get; set; }
         public int StatusId { get; set; }
         public short OrgId { get; set; }
         public int SubOrgId { get; set; }
-        public Int32 BatchId { get; set; }
-        [Required]
-        public bool? Active { get; set; }
+        public bool Active { get; set; }
         public bool Deleted { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? CreatedDate { get; set; }
@@ -31,10 +30,10 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public int SectionId { get; set; }
         public int SemesterId { get; set; }
-        public int ClassId { get; set; }
+        public short BatchId { get; set; }
 
         [ForeignKey(nameof(StudentClassId))]
-        [InverseProperty("StudentStatuses")]
+        [InverseProperty("StudentStatures")]
         public virtual StudentClass StudentClass { get; set; }
     }
 }

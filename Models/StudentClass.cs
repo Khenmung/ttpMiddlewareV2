@@ -24,7 +24,7 @@ namespace ttpMiddleware.Models
             StudentCertificates = new HashSet<StudentCertificate>();
             StudentClassSubjects = new HashSet<StudentClassSubject>();
             StudentFeeReceipts = new HashSet<StudentFeeReceipt>();
-            StudentStatuses = new HashSet<StudentStatus>();
+            StudentStatures = new HashSet<StudentStature>();
             TaskAssignments = new HashSet<TaskAssignment>();
         }
 
@@ -99,8 +99,8 @@ namespace ttpMiddleware.Models
         public virtual ICollection<StudentClassSubject> StudentClassSubjects { get; set; }
         [InverseProperty(nameof(StudentFeeReceipt.StudentClass))]
         public virtual ICollection<StudentFeeReceipt> StudentFeeReceipts { get; set; }
-        [InverseProperty(nameof(StudentStatus.StudentClass))]
-        public virtual ICollection<StudentStatus> StudentStatuses { get; set; }
+        [InverseProperty(nameof(StudentStature.StudentClass))]
+        public virtual ICollection<StudentStature> StudentStatures { get; set; }
         [InverseProperty(nameof(TaskAssignment.AssignedToClass))]
         public virtual ICollection<TaskAssignment> TaskAssignments { get; set; }
     }

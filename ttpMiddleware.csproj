@@ -6,9 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="RawModels\**" />
     <Compile Remove="wwwroot\**" />
+    <Content Remove="RawModels\**" />
     <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="RawModels\**" />
     <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="RawModels\**" />
     <None Remove="wwwroot\**" />
   </ItemGroup>
 
@@ -16,6 +20,7 @@
     <Compile Remove="Controllers\ApplicationPricesController.cs" />
     <Compile Remove="Controllers\AppUsersController.cs" />
     <Compile Remove="Controllers\AspNetUsersController.cs" />
+    <Compile Remove="Models\FeePaymentRelated.cs" />
   </ItemGroup>
 
   <ItemGroup>

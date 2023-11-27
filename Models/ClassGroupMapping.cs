@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("ClassGroupMapping")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Deleted), Name = "NonClusteredIndex-20230830-205313")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20230830-205313")]
     public partial class ClassGroupMapping
     {
         [Key]

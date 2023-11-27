@@ -19,6 +19,7 @@ namespace ttpMiddleware.Models
         [Key]
         public short ClassSubjectMarkComponentId { get; set; }
         public int ClassSubjectId { get; set; }
+        public int ClassId { get; set; }
         public int SubjectComponentId { get; set; }
         [Column(TypeName = "decimal(6, 2)")]
         public decimal FullMark { get; set; }

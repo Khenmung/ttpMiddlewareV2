@@ -27,7 +27,7 @@ namespace ttpMiddleware.Models
         public int ClassGroupId { get; set; }
         public short? Duration { get; set; }
         public bool? DisplayResult { get; set; }
-        public int? ETypeId { get; set; }
+        public bool? AppendAnswer { get; set; }
         public bool? ProvideCertificate { get; set; }
         public byte? FullMark { get; set; }
         public byte? PassMark { get; set; }
@@ -48,6 +48,7 @@ namespace ttpMiddleware.Models
         public DateTime? StartDate { get; set; }
         [StringLength(8)]
         public string StartTime { get; set; }
+        public int ETypeId { get; set; }
 
         [InverseProperty(nameof(ClassEvaluation.EvaluationMaster))]
         public virtual ICollection<ClassEvaluation> ClassEvaluations { get; set; }

@@ -22,7 +22,6 @@ using Newtonsoft.Json.Linq;
 using System.Web;
 using ttpMiddleware.Common;
 using Microsoft.AspNet.OData.Builder;
-using ttpMiddleware.RawModels;
 
 namespace ttpMiddleware.Controllers
 {

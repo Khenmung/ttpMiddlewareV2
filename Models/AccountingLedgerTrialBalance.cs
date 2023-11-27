@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("AccountingLedgerTrialBalance")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(TotalDebit), nameof(Balance), nameof(StudentClassId), nameof(Month), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20231005-194615")]
     public partial class AccountingLedgerTrialBalance
     {
         public AccountingLedgerTrialBalance()

@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using ttpMiddleware.Data.Entities;
 
 #nullable disable
@@ -127,7 +129,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<StudentFamilyNFriend> StudentFamilyNFriends { get; set; }
         public virtual DbSet<StudentFeeReceipt> StudentFeeReceipts { get; set; }
         public virtual DbSet<StudentGrade> StudentGrades { get; set; }
-        public virtual DbSet<StudentStatus> StudentStatuses { get; set; }
+        public virtual DbSet<StudentStature> StudentStatures { get; set; }
         public virtual DbSet<SubjectComponent> SubjectComponents { get; set; }
         public virtual DbSet<SubjectType> SubjectTypes { get; set; }
         public virtual DbSet<SyllabusDetail> SyllabusDetails { get; set; }
@@ -1017,7 +1019,7 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<EvaluationMaster>(entity =>
             {
-                entity.Property(e => e.ETypeId).HasDefaultValueSql("((0))");
+                entity.Property(e => e.AppendAnswer).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.StartTime).IsUnicode(false);
             });
@@ -2280,15 +2282,13 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_StudentGrade_MasterItems");
             });
 
-            modelBuilder.Entity<StudentStatus>(entity =>
+            modelBuilder.Entity<StudentStature>(entity =>
             {
-                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.StudentClass)
-                    .WithMany(p => p.StudentStatuses)
+                    .WithMany(p => p.StudentStatures)
                     .HasForeignKey(d => d.StudentClassId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FeePaymentAndStatus_StudentClass");
+                    .HasConstraintName("FK_StudentStatus_StudentClass");
             });
 
             modelBuilder.Entity<SubjectComponent>(entity =>

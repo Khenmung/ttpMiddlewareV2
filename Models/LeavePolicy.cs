@@ -20,7 +20,6 @@ namespace ttpMiddleware.Models
         [Key]
         public int LeavePolicyId { get; set; }
         public int LeaveNameId { get; set; }
-        public int LeaveOpenAdjustCloseId { get; set; }
         [Required]
         [StringLength(256)]
         public string FormulaOrDays { get; set; }
@@ -46,11 +45,8 @@ namespace ttpMiddleware.Models
         [InverseProperty("LeavePolicies")]
         public virtual Batch Batch { get; set; }
         [ForeignKey(nameof(LeaveNameId))]
-        [InverseProperty(nameof(MasterItem.LeavePolicyLeaveNames))]
+        [InverseProperty(nameof(MasterItem.LeavePolicies))]
         public virtual MasterItem LeaveName { get; set; }
-        [ForeignKey(nameof(LeaveOpenAdjustCloseId))]
-        [InverseProperty(nameof(MasterItem.LeavePolicyLeaveOpenAdjustCloses))]
-        public virtual MasterItem LeaveOpenAdjustClose { get; set; }
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.LeavePolicies))]
         public virtual Organization Org { get; set; }

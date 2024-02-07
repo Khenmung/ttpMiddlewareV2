@@ -32,7 +32,11 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public int SubOrgId { get; set; }
+        public short BatchId { get; set; }
 
+        [ForeignKey(nameof(BatchId))]
+        [InverseProperty("TeacherSubjects")]
+        public virtual Batch Batch { get; set; }
         [ForeignKey(nameof(ClassSubjectId))]
         [InverseProperty("TeacherSubjects")]
         public virtual ClassSubject ClassSubject { get; set; }

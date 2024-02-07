@@ -120,6 +120,15 @@ namespace ttpMiddleware.Controllers
                     if (_RollNO > 0)
                         return BadRequest(entity.RollNo + "-Roll no. already exist.");
                 }
+                var _student = await _context.Students.Where(x => x.StudentId != entity.StudentId
+                    && x.OrgId == entity.OrgId
+                    && x.SubOrgId == entity.SubOrgId
+                    ).FirstOrDefaultAsync();
+                if (_student != null)
+                {
+                    _student.ClassId = entity.ClassId;
+                    _context.Update(_student);
+                }
                 if (existingSemesterId != entity.SemesterId || existingSectionId != entity.SectionId || existingActive != entity.Active)
                 {
                     var studentClassSubject = await _context.StudentClassSubjects.Where(x => x.StudentClassId == entity.StudentClassId
@@ -301,6 +310,7 @@ namespace ttpMiddleware.Controllers
 
                 var _student = await _context.Students.Where(x => x.StudentId == studentClass.StudentId).FirstOrDefaultAsync();
                 _student.BatchId = studentClass.BatchId;
+                _student.ClassId = studentClass.ClassId;
                 _context.Students.Update(_student);
 
                 await _context.SaveChangesAsync();

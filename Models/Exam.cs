@@ -42,7 +42,6 @@ namespace ttpMiddleware.Models
         public int? CategoryId { get; set; }
         public int? ClassGroupId { get; set; }
         public short? BatchId { get; set; }
-        public short Sequence { get; set; }
         public byte? Active { get; set; }
         public bool Deleted { get; set; }
         public short OrgId { get; set; }
@@ -56,6 +55,7 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public int SubOrgId { get; set; }
         public int WithHeldResultStatusId { get; set; }
+        public short Sequence { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("Exams")]

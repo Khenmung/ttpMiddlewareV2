@@ -139,6 +139,7 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<EvaluationResultMark>("EvaluationResultMarks");
             //builder.EntitySet<SubjectComponent>("SubjectComponents");
             builder.EntitySet<StudentStature>("StudentStatures");
+            builder.EntitySet<LedgerPosting>("LedgerPostings");
 
             return builder.GetEdmModel();
         }

@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using ttpMiddleware.Data.Entities;
 
 #nullable disable
@@ -91,6 +89,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<LeaveBalance> LeaveBalances { get; set; }
         public virtual DbSet<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
         public virtual DbSet<LeavePolicy> LeavePolicies { get; set; }
+        public virtual DbSet<LedgerPosting> LedgerPostings { get; set; }
         public virtual DbSet<MasterItem> MasterItems { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<News> News { get; set; }
@@ -219,7 +218,7 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_AccountingVouchers_StudentFeeReceipts");
 
                 entity.HasOne(d => d.GeneralLedgerAccount)
-                    .WithMany(p => p.AccountingVouchers)
+                    .WithMany(p => p.AccountingVoucherGeneralLedgerAccounts)
                     .HasForeignKey(d => d.GeneralLedgerAccountId)
                     .HasConstraintName("FK_AccountingVouchers_GeneralLedger");
 
@@ -228,6 +227,12 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.LedgerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AccountingVouchers_AccountingLedgerTrialBalance");
+
+                entity.HasOne(d => d.LedgerPosting)
+                    .WithMany(p => p.AccountingVoucherLedgerPostings)
+                    .HasForeignKey(d => d.LedgerPostingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AccountingVouchers_LedgerPostingId");
 
                 entity.HasOne(d => d.Org)
                     .WithMany(p => p.AccountingVouchers)
@@ -761,6 +766,10 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.ShortName).IsUnicode(false);
 
+                entity.Property(e => e.Spouse)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
                 entity.Property(e => e.SubOrgId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.WhatsappNo).IsUnicode(false);
@@ -1117,6 +1126,10 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<ExamNCalculate>(entity =>
             {
+                entity.Property(e => e.Formula)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
                 entity.HasOne(d => d.Exam)
                     .WithMany(p => p.ExamNCalculates)
                     .HasForeignKey(d => d.ExamId)
@@ -1448,22 +1461,41 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_LeavePolicy_BatchesFinancialYear");
 
                 entity.HasOne(d => d.LeaveName)
-                    .WithMany(p => p.LeavePolicyLeaveNames)
+                    .WithMany(p => p.LeavePolicies)
                     .HasForeignKey(d => d.LeaveNameId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LeavePolicy_MasterDataLeaveNameId");
-
-                entity.HasOne(d => d.LeaveOpenAdjustClose)
-                    .WithMany(p => p.LeavePolicyLeaveOpenAdjustCloses)
-                    .HasForeignKey(d => d.LeaveOpenAdjustCloseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LeavePolicy_MasterDataOpenAdjustClose");
 
                 entity.HasOne(d => d.Org)
                     .WithMany(p => p.LeavePolicies)
                     .HasForeignKey(d => d.OrgId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LeavePolicy_Organization");
+            });
+
+            modelBuilder.Entity<LedgerPosting>(entity =>
+            {
+                entity.Property(e => e.Reference).IsUnicode(false);
+
+                entity.Property(e => e.ShortText).IsUnicode(false);
+
+                entity.HasOne(d => d.AccountingVoucher)
+                    .WithMany(p => p.LedgerPostings)
+                    .HasForeignKey(d => d.AccountingVoucherId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LedgerPosting_AccountingVouchers");
+
+                entity.HasOne(d => d.Org)
+                    .WithMany(p => p.LedgerPostings)
+                    .HasForeignKey(d => d.OrgId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LedgerPosting_Organization");
+
+                entity.HasOne(d => d.PostingGeneralLedger)
+                    .WithMany(p => p.LedgerPostings)
+                    .HasForeignKey(d => d.PostingGeneralLedgerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LedgerPosting_GeneralLedger");
             });
 
             modelBuilder.Entity<MasterItem>(entity =>
@@ -1955,11 +1987,23 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.AdmissionNo).IsUnicode(false);
 
+                entity.Property(e => e.AdmissionStatusId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.AlternateContact).IsUnicode(false);
 
                 entity.Property(e => e.BankAccountNo).IsUnicode(false);
 
+                entity.Property(e => e.BatchId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.BloodgroupId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.BoardRegistrationNo).IsUnicode(false);
+
+                entity.Property(e => e.CategoryId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.ClassAdmissionSought).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.ClubId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.ContactPersonContactNo).IsUnicode(false);
 
@@ -1973,7 +2017,11 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.FirstName).IsUnicode(false);
 
+                entity.Property(e => e.GenderId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.Height).IsUnicode(false);
+
+                entity.Property(e => e.HouseId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.IFSCCode).IsUnicode(false);
 
@@ -1995,7 +2043,13 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.PermanentAddress).IsUnicode(false);
 
+                entity.Property(e => e.PermanentAddressCityId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PermanentAddressCountryId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.PermanentAddressPincode).IsUnicode(false);
+
+                entity.Property(e => e.PermanentAddressStateId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.PersonalNo).IsUnicode(false);
 
@@ -2003,13 +2057,25 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.PresentAddress).IsUnicode(false);
 
+                entity.Property(e => e.PresentAddressCityId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PresentAddressCountryId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.PresentAddressPincode).IsUnicode(false);
+
+                entity.Property(e => e.PresentAddressStateId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.ReasonForLeavingId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.RelationWithContactPerson).IsUnicode(false);
 
+                entity.Property(e => e.ReligionId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.RemarkId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.RollNo).IsUnicode(false);
+
+                entity.Property(e => e.SectionId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.TransferFromSchool).IsUnicode(false);
 
@@ -2411,6 +2477,12 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<TeacherSubject>(entity =>
             {
+                entity.HasOne(d => d.Batch)
+                    .WithMany(p => p.TeacherSubjects)
+                    .HasForeignKey(d => d.BatchId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TeacherSubject_Batches");
+
                 entity.HasOne(d => d.ClassSubject)
                     .WithMany(p => p.TeacherSubjects)
                     .HasForeignKey(d => d.ClassSubjectId)

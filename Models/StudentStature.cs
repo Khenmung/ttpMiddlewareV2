@@ -31,6 +31,7 @@ namespace ttpMiddleware.Models
         public int SectionId { get; set; }
         public int SemesterId { get; set; }
         public short BatchId { get; set; }
+        public short ExamId { get; set; }
 
         [ForeignKey(nameof(StudentClassId))]
         [InverseProperty("StudentStatures")]

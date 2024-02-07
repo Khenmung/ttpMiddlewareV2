@@ -9,10 +9,13 @@ using ttpMiddleware.Models;
 using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNet.OData;
 
-using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
+using ttpMiddleware.CommonFunctions;
+using Newtonsoft.Json.Linq;
+
+namespace ttpMiddleware.Controllers
 {
     [ODataRoutePrefix("[controller]")]
-    [EnableQuery]    
+    [EnableQuery]
     public class AccountingVouchersController : ProtectedController
     {
         private readonly ttpauthContext _context;
@@ -108,12 +111,94 @@ using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
         // POST: api/AccountingVouchers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AccountingVoucher>> PostAccountingVoucher([FromBody]AccountingVoucher accountingVoucher)
+        public async Task<ActionResult<AccountingVoucher>> PostAccountingVoucher([FromBody] JObject jsonWrapper)
         {
-            _context.AccountingVouchers.Add(accountingVoucher);
-            await _context.SaveChangesAsync();
+            JToken jsonValues = jsonWrapper;
+            List<LedgerPosting> _LedgerPosting = new List<LedgerPosting>();
+            List<AccountingVoucher> _AccountingVouchers = new List<AccountingVoucher>();
+            using var tran = _context.Database.BeginTransaction();
+            try
+            {
+                foreach (JProperty x in jsonValues)
+                {
+                    if (x.Name == "LedgerPosting")
+                        _LedgerPosting = x.Value.ToObject<List<LedgerPosting>>();
+                    else if (x.Name == "AccountingVoucher")
+                        _AccountingVouchers = x.Value.ToObject<List<AccountingVoucher>>();
 
-            return Ok(accountingVoucher);
+                }
+                foreach (AccountingVoucher voucher in _AccountingVouchers)
+                {
+                    if (voucher.AccountingVoucherId == 0)
+                    {
+                        _context.AccountingVouchers.Add(voucher);
+                        await _context.SaveChangesAsync();
+                        _LedgerPosting.Where(x => x.PostingGeneralLedgerId == voucher.GeneralLedgerAccountId 
+                        && x.Debit == voucher.Debit).ToList().ForEach(s => s.AccountingVoucherId = voucher.AccountingVoucherId);
+                        //foreach (var posting in postings)
+                        //    posting.AccountingVoucherId = voucher.AccountingVoucherId;
+                    }
+                    else
+                    {
+                        var existingav = await _context.AccountingVouchers.Where(x => x.AccountingVoucherId == voucher.AccountingVoucherId).FirstOrDefaultAsync();
+                        if (existingav != null)
+                        {
+                            existingav.Balance = voucher.Balance;
+                            existingav.DocDate = voucher.DocDate;
+                            existingav.PostingDate = voucher.PostingDate;
+                            existingav.ClassFeeId = voucher.ClassFeeId;
+                            existingav.FeeReceiptId = voucher.FeeReceiptId;
+                            existingav.ParentId = voucher.ParentId;
+                            existingav.BaseAmount = voucher.BaseAmount;
+                            existingav.Balance = voucher.Balance;
+                            existingav.OrgId = voucher.OrgId;
+                            existingav.SubOrgId = voucher.SubOrgId;
+                            existingav.Amount = voucher.Amount;
+                            existingav.Debit = voucher.Debit;
+                            existingav.Reference = voucher.Reference;
+                            existingav.Active = voucher.Active;
+                            existingav.ShortText = voucher.ShortText;
+                            existingav.UpdatedDate = voucher.UpdatedDate;
+                            _context.Update(existingav);
+                        }
+                    }
+                }
+
+
+                foreach (LedgerPosting posting in _LedgerPosting)
+                {
+                    if (posting.LedgerPostingId == 0)
+                        _context.LedgerPostings.Add(posting);
+                    else
+                    {
+                        var existingPosting = await _context.LedgerPostings.Where(x => x.LedgerPostingId == posting.LedgerPostingId).FirstOrDefaultAsync();
+                        if (existingPosting != null)
+                        {
+                            existingPosting.PostingGeneralLedgerId = posting.PostingGeneralLedgerId;
+                            existingPosting.AccountingVoucherId = posting.AccountingVoucherId;
+                            existingPosting.OrgId = posting.OrgId;
+                            existingPosting.SubOrgId = posting.SubOrgId;
+                            existingPosting.Amount = posting.Amount;
+                            existingPosting.Debit = posting.Debit;
+                            existingPosting.Reference = posting.Reference;
+                            existingPosting.Active = posting.Active;
+                            existingPosting.ShortText = posting.ShortText;
+                            existingPosting.UpdatedDate = posting.UpdatedDate;
+                            _context.Update(existingPosting);
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+                tran.Commit();
+
+                return Ok(_AccountingVouchers[0]);
+            }
+            catch (Exception ex)
+            {
+                tran.Rollback();
+                return BadRequest(ex);
+            }
+
         }
 
         // DELETE: api/AccountingVouchers/5

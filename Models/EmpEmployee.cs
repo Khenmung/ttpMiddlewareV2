@@ -131,6 +131,8 @@ namespace ttpMiddleware.Models
         public int? Assistant1Id { get; set; }
         public int? Assistant2Id { get; set; }
         public int ManagerId { get; set; }
+        [StringLength(30)]
+        public string Spouse { get; set; }
 
         [InverseProperty("AttendanceReportNavigation")]
         public virtual AttendanceReport AttendanceReport { get; set; }

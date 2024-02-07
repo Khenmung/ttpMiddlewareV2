@@ -33,6 +33,7 @@ namespace ttpMiddleware.Models
             StudentClassSubjects = new HashSet<StudentClassSubject>();
             StudentClasses = new HashSet<StudentClass>();
             StudentFeeReceipts = new HashSet<StudentFeeReceipt>();
+            TeacherSubjects = new HashSet<TeacherSubject>();
         }
 
         [Key]
@@ -103,5 +104,7 @@ namespace ttpMiddleware.Models
         public virtual ICollection<StudentClass> StudentClasses { get; set; }
         [InverseProperty(nameof(StudentFeeReceipt.Batch))]
         public virtual ICollection<StudentFeeReceipt> StudentFeeReceipts { get; set; }
+        [InverseProperty(nameof(TeacherSubject.Batch))]
+        public virtual ICollection<TeacherSubject> TeacherSubjects { get; set; }
     }
 }

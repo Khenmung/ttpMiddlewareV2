@@ -992,27 +992,31 @@ namespace ttpMiddleware.Controllers
                 //{
                 //    Console.WriteLine("hi");
                 //}
+                var today = Convert.ToInt32(DateTime.Today.Year.ToString() + DateTime.Today.Month.ToString());
                 var existing = await _appDBContext.AccountingLedgerTrialBalances.Where(x => x.Month == _invoice.Month
                             && x.StudentClassId == _invoice.StudentClassId
                             && x.OrgId == _invoice.OrgId
                             && x.SubOrgId == _invoice.SubOrgId
-                            && x.Active == 1).ToListAsync();
-                if (existing.Count == 0)
+                            && x.Active == 1).FirstOrDefaultAsync();
+                if (existing ==null)
                 {
                     _invoice.CreatedDate = DateTime.Now;
                     _appDBContext.AccountingLedgerTrialBalances.Add(_invoice);
                 }
-                else if (existing[0].TotalCredit == 0)// only if any amount is not yet paid.
+                // only if any amount is not yet paid.
+                // Balance ==0 but not paid means free student fee
+                //fees can be updated only for current future months.
+                else if ((existing.TotalCredit == 0 && existing.Balance>0) || (existing.TotalCredit == 0 && existing.Month>= today))
                 {
-                    existing[0].ClassId = _invoice.ClassId;
-                    existing[0].SectionId = _invoice.SectionId;
-                    existing[0].SemesterId = _invoice.SemesterId;
-                    existing[0].BaseAmount = _invoice.BaseAmount;
-                    existing[0].TotalDebit = _invoice.TotalDebit;
-                    existing[0].Balance = _invoice.Balance;
-                    existing[0].UpdatedDate = DateTime.Now;
+                    existing.ClassId = _invoice.ClassId;
+                    existing.SectionId = _invoice.SectionId;
+                    existing.SemesterId = _invoice.SemesterId;
+                    existing.BaseAmount = _invoice.BaseAmount;
+                    existing.TotalDebit = _invoice.TotalDebit;
+                    existing.Balance = _invoice.Balance;
+                    existing.UpdatedDate = DateTime.Now;
 
-                    _appDBContext.AccountingLedgerTrialBalances.Update(existing[0]);
+                    _appDBContext.AccountingLedgerTrialBalances.Update(existing);
                 }
             }
             _appDBContext.SaveChanges();

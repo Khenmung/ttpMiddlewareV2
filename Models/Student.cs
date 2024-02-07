@@ -135,6 +135,7 @@ namespace ttpMiddleware.Models
         public int SemesterId { get; set; }
         public short FeeTypeId { get; set; }
         public int Remark2Id { get; set; }
+        public int ClassId { get; set; }
 
         [ForeignKey(nameof(BloodgroupId))]
         [InverseProperty(nameof(MasterItem.StudentBloodgroups))]

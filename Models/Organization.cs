@@ -48,6 +48,7 @@ namespace ttpMiddleware.Models
             LeaveBalances = new HashSet<LeaveBalance>();
             LeaveEmployeeLeaves = new HashSet<LeaveEmployeeLeaf>();
             LeavePolicies = new HashSet<LeavePolicy>();
+            LedgerPostings = new HashSet<LedgerPosting>();
             MasterItems = new HashSet<MasterItem>();
             Messages = new HashSet<Message>();
             OrganizationPayments = new HashSet<OrganizationPayment>();
@@ -180,6 +181,8 @@ namespace ttpMiddleware.Models
         public virtual ICollection<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
         [InverseProperty(nameof(LeavePolicy.Org))]
         public virtual ICollection<LeavePolicy> LeavePolicies { get; set; }
+        [InverseProperty(nameof(LedgerPosting.Org))]
+        public virtual ICollection<LedgerPosting> LedgerPostings { get; set; }
         [InverseProperty(nameof(MasterItem.Org))]
         public virtual ICollection<MasterItem> MasterItems { get; set; }
         [InverseProperty(nameof(Message.Org))]

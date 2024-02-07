@@ -42,6 +42,7 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public int SubOrgId { get; set; }
+        public short ClassGroupId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("ExamSlots")]

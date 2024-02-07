@@ -10,6 +10,11 @@ namespace ttpMiddleware.Models
 {
     public partial class AccountingVoucher
     {
+        public AccountingVoucher()
+        {
+            LedgerPostings = new HashSet<LedgerPosting>();
+        }
+
         [Key]
         public int AccountingVoucherId { get; set; }
         [Column(TypeName = "datetime")]
@@ -48,6 +53,7 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public bool Deleted { get; set; }
         public int ActivityTypeId { get; set; }
+        public int LedgerPostingId { get; set; }
 
         [ForeignKey(nameof(ClassFeeId))]
         [InverseProperty("AccountingVouchers")]
@@ -56,13 +62,18 @@ namespace ttpMiddleware.Models
         [InverseProperty(nameof(StudentFeeReceipt.AccountingVouchers))]
         public virtual StudentFeeReceipt FeeReceipt { get; set; }
         [ForeignKey(nameof(GeneralLedgerAccountId))]
-        [InverseProperty(nameof(GeneralLedger.AccountingVouchers))]
+        [InverseProperty(nameof(GeneralLedger.AccountingVoucherGeneralLedgerAccounts))]
         public virtual GeneralLedger GeneralLedgerAccount { get; set; }
         [ForeignKey(nameof(LedgerId))]
         [InverseProperty(nameof(AccountingLedgerTrialBalance.AccountingVouchers))]
         public virtual AccountingLedgerTrialBalance Ledger { get; set; }
+        [ForeignKey(nameof(LedgerPostingId))]
+        [InverseProperty(nameof(GeneralLedger.AccountingVoucherLedgerPostings))]
+        public virtual GeneralLedger LedgerPosting { get; set; }
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.AccountingVouchers))]
         public virtual Organization Org { get; set; }
+        [InverseProperty("AccountingVoucher")]
+        public virtual ICollection<LedgerPosting> LedgerPostings { get; set; }
     }
 }

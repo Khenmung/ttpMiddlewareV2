@@ -9,12 +9,15 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("GeneralLedger")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), Name = "NonClusteredOrgSubOrgActiveDelete")]
     public partial class GeneralLedger
     {
         public GeneralLedger()
         {
             AccountingLedgerTrialBalances = new HashSet<AccountingLedgerTrialBalance>();
-            AccountingVouchers = new HashSet<AccountingVoucher>();
+            AccountingVoucherGeneralLedgerAccounts = new HashSet<AccountingVoucher>();
+            AccountingVoucherLedgerPostings = new HashSet<AccountingVoucher>();
+            LedgerPostings = new HashSet<LedgerPosting>();
         }
 
         [Key]
@@ -68,6 +71,10 @@ namespace ttpMiddleware.Models
         [InverseProperty(nameof(AccountingLedgerTrialBalance.GeneralLedger))]
         public virtual ICollection<AccountingLedgerTrialBalance> AccountingLedgerTrialBalances { get; set; }
         [InverseProperty(nameof(AccountingVoucher.GeneralLedgerAccount))]
-        public virtual ICollection<AccountingVoucher> AccountingVouchers { get; set; }
+        public virtual ICollection<AccountingVoucher> AccountingVoucherGeneralLedgerAccounts { get; set; }
+        [InverseProperty(nameof(AccountingVoucher.LedgerPosting))]
+        public virtual ICollection<AccountingVoucher> AccountingVoucherLedgerPostings { get; set; }
+        [InverseProperty(nameof(LedgerPosting.PostingGeneralLedger))]
+        public virtual ICollection<LedgerPosting> LedgerPostings { get; set; }
     }
 }

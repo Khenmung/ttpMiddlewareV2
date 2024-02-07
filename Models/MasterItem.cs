@@ -32,8 +32,7 @@ namespace ttpMiddleware.Models
             InventoryItemUnits = new HashSet<InventoryItem>();
             InvoiceComponents = new HashSet<InvoiceComponent>();
             LeaveEmployeeLeaves = new HashSet<LeaveEmployeeLeaf>();
-            LeavePolicyLeaveNames = new HashSet<LeavePolicy>();
-            LeavePolicyLeaveOpenAdjustCloses = new HashSet<LeavePolicy>();
+            LeavePolicies = new HashSet<LeavePolicy>();
             OrganizationPayments = new HashSet<OrganizationPayment>();
             Pages = new HashSet<Page>();
             PlanAndMasterItems = new HashSet<PlanAndMasterItem>();
@@ -122,9 +121,7 @@ namespace ttpMiddleware.Models
         [InverseProperty(nameof(LeaveEmployeeLeaf.LeaveStatus))]
         public virtual ICollection<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
         [InverseProperty(nameof(LeavePolicy.LeaveName))]
-        public virtual ICollection<LeavePolicy> LeavePolicyLeaveNames { get; set; }
-        [InverseProperty(nameof(LeavePolicy.LeaveOpenAdjustClose))]
-        public virtual ICollection<LeavePolicy> LeavePolicyLeaveOpenAdjustCloses { get; set; }
+        public virtual ICollection<LeavePolicy> LeavePolicies { get; set; }
         [InverseProperty(nameof(OrganizationPayment.PaymentModeNavigation))]
         public virtual ICollection<OrganizationPayment> OrganizationPayments { get; set; }
         [InverseProperty(nameof(Page.Application))]

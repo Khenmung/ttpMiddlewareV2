@@ -27,6 +27,11 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Formula { get; set; }
+        public int CalculateCategoryId { get; set; }
+        public byte Sequence { get; set; }
 
         [ForeignKey(nameof(ExamId))]
         [InverseProperty("ExamNCalculates")]

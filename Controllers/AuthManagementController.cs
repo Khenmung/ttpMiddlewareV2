@@ -265,7 +265,7 @@ namespace ttpMiddleware.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> SyncData([FromBody] JObject data)
-            {
+        {
             JToken jsonValues = data;
             //List<Student> _StudentList = new List<Student>();
             //var _data;
@@ -274,16 +274,16 @@ namespace ttpMiddleware.Controllers
                 //builder.EntitySet<MasterItem>("MasterItems");
                 if (x.Name == "MasterItem")
                 {
-                    
+
                 }
                 else if (x.Name == "Page")
                 {
                     List<Page> _data = x.Value.ToObject<List<Page>>();
-                    foreach(var item in _data)
+                    foreach (var item in _data)
                     {
                         var _localdata = await _appDBContext.Pages.Where(x => x.PageId == item.PageId).FirstOrDefaultAsync();
-                        if(_localdata != null)
-                        {                           
+                        if (_localdata != null)
+                        {
                             _appDBContext.Update(item);
                         }
                         else
@@ -293,7 +293,7 @@ namespace ttpMiddleware.Controllers
                     }
                 }
             }
-           
+
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             //builder.EntitySet<Page>("Pages");
             builder.EntitySet<PageHistory>("PageHistories");
@@ -350,7 +350,7 @@ namespace ttpMiddleware.Controllers
             builder.EntitySet<TaskAssignment>("TaskAssignments");
             builder.EntitySet<TaskAssignmentComment>("TaskAssignmentComments");
             builder.EntitySet<LeaveBalance>("LeaveBalances");
-            
+
             builder.EntitySet<AttendanceReport>("AttendanceReports");
             builder.EntitySet<LeavePolicy>("LeavePolicies");
 
@@ -983,68 +983,55 @@ namespace ttpMiddleware.Controllers
         {
             JToken jsonValues = invoices;
             AccountingLedgerTrialBalance _invoice = new AccountingLedgerTrialBalance();
-
-            foreach (var x in jsonValues)
+            try
             {
 
-                _invoice = x.ToObject<AccountingLedgerTrialBalance>();
-                //if (_invoice.Month == 202205)
-                //{
-                //    Console.WriteLine("hi");
-                //}
-                var today = Convert.ToInt32(DateTime.Today.Year.ToString() + DateTime.Today.Month.ToString());
-                var existing = await _appDBContext.AccountingLedgerTrialBalances.Where(x => x.Month == _invoice.Month
-                            && x.StudentClassId == _invoice.StudentClassId
-                            && x.OrgId == _invoice.OrgId
-                            && x.SubOrgId == _invoice.SubOrgId
-                            && x.Active == 1).FirstOrDefaultAsync();
-                if (existing ==null)
-                {
-                    _invoice.CreatedDate = DateTime.Now;
-                    _appDBContext.AccountingLedgerTrialBalances.Add(_invoice);
-                }
-                // only if any amount is not yet paid.
-                // Balance ==0 but not paid means free student fee
-                //fees can be updated only for current future months.
-                else if ((existing.TotalCredit == 0 && existing.Balance>0) || (existing.TotalCredit == 0 && existing.Month>= today))
-                {
-                    existing.ClassId = _invoice.ClassId;
-                    existing.SectionId = _invoice.SectionId;
-                    existing.SemesterId = _invoice.SemesterId;
-                    existing.BaseAmount = _invoice.BaseAmount;
-                    existing.TotalDebit = _invoice.TotalDebit;
-                    existing.Balance = _invoice.Balance;
-                    existing.UpdatedDate = DateTime.Now;
 
-                    _appDBContext.AccountingLedgerTrialBalances.Update(existing);
+                foreach (var x in jsonValues)
+                {
+
+                    _invoice = x.ToObject<AccountingLedgerTrialBalance>();
+                    //if (_invoice.Month == 202205)
+                    //{
+                    //    Console.WriteLine("hi");
+                    //}
+                    var today = Convert.ToInt32(DateTime.Today.Year.ToString() + DateTime.Today.Month.ToString().PadLeft(2, '0'));
+                    var existing = await _appDBContext.AccountingLedgerTrialBalances.Where(x => x.MonthDisplay == _invoice.MonthDisplay
+                                && x.StudentClassId == _invoice.StudentClassId
+                                && x.OrgId == _invoice.OrgId
+                                && x.SubOrgId == _invoice.SubOrgId
+                                && x.Active == 1).FirstOrDefaultAsync();
+                    if (existing == null)
+                    {
+                        _invoice.CreatedDate = DateTime.Now;
+                        _appDBContext.AccountingLedgerTrialBalances.Add(_invoice);
+                    }
+                    // only if any amount is not yet paid. TotalCredit == 0.
+                    // Balance ==0 but not paid means free student fee
+                    //fees can be updated only for current future months.
+                    else if (existing.TotalCredit == 0 && (existing.Balance > 0 || _invoice.Month >= today))
+                    {
+                        existing.ClassId = _invoice.ClassId;
+                        existing.SectionId = _invoice.SectionId;
+                        existing.SemesterId = _invoice.SemesterId;
+                        existing.BaseAmount = _invoice.BaseAmount;
+                        existing.TotalDebit = _invoice.TotalDebit;
+                        existing.Balance = _invoice.Balance;
+                        existing.UpdatedDate = DateTime.Now;
+
+                        _appDBContext.AccountingLedgerTrialBalances.Update(existing);
+                    }
                 }
+                _appDBContext.SaveChanges();
+
+                return Ok();
             }
-            _appDBContext.SaveChanges();
-
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
-        //private double ApplyVariables(Dictionary<string,object> data, string formula)
-        //{
-        //    //StudentName, FeeName, Month *, MonthName, ClassName, SectionName, Amount
-
-        //     var filledVar = formula;
-        //    foreach(var item in data)
-        //    {
-        //        filledVar = filledVar.Replace("[" + item.Key + "]", (string)item.Value);
-        //    }
-        //    //forEach(m => {
-        //    //    Object.keys(m).forEach(f => {
-        //    //        if (filledVar.includes(f))
-        //    //        {
-        //    //            if (isNaN(m[f]))
-        //    //                filledVar = filledVar.replaceAll("[" + f + "]", "'" + m[f] + "'");
-        //    //            else
-        //    //                filledVar = filledVar.replaceAll("[" + f + "]", m[f]);
-        //    //        }
-        //    //    });
-        //    //})
-        //    //return filledVar;
-        //}
+        
         private async Task<AuthResult> GenerateJwtToken(ApplicationUser user)
         {
             try

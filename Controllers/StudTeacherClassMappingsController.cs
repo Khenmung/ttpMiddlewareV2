@@ -5,7 +5,10 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNet.OData.Routing;
-using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
+using ttpMiddleware.CommonFunctions;
+using System;
+
+namespace ttpMiddleware.Controllers
 {
     [ODataRoutePrefix("[controller]")]
     [EnableQuery]
@@ -105,8 +108,15 @@ using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
         [HttpPost]
         public async Task<ActionResult<StudTeacherClassMapping>> PostStudTeacherClassMapping([FromBody] StudTeacherClassMapping studTeacherClassMapping)
         {
-            _context.StudTeacherClassMappings.Add(studTeacherClassMapping);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.StudTeacherClassMappings.Add(studTeacherClassMapping);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
 
             return Ok(studTeacherClassMapping);
         }

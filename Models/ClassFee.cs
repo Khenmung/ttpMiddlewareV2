@@ -28,6 +28,7 @@ namespace ttpMiddleware.Models
         public decimal Amount { get; set; }
         public short BatchId { get; set; }
         public int Month { get; set; }
+        public int MonthDisplay { get; set; }
         public byte? Recurring { get; set; }
         public byte Active { get; set; }
         public int? LocationId { get; set; }

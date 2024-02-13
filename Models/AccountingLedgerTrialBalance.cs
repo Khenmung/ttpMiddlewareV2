@@ -23,6 +23,8 @@ namespace ttpMiddleware.Models
         public int? EmployeeId { get; set; }
         public int? GeneralLedgerId { get; set; }
         public int? Month { get; set; }
+        public int MonthDisplay { get; set; }
+
         [Column(TypeName = "decimal(18, 2)")]
         public decimal BaseAmount { get; set; }
         [Column(TypeName = "decimal(18, 2)")]

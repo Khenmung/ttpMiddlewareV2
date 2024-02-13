@@ -307,12 +307,18 @@ namespace ttpMiddleware.Controllers
                     item.IsCurrent = false;
                     _context.Update(item);
                 }
-
-                var _student = await _context.Students.Where(x => x.StudentId == studentClass.StudentId).FirstOrDefaultAsync();
-                _student.BatchId = studentClass.BatchId;
-                _student.ClassId = studentClass.ClassId;
-                _context.Students.Update(_student);
-
+                //checking if the batchid is the current batchid then only update students
+                var _IsCurrentBatchId = await _context.Batches.Where(x => x.CurrentBatch == 1
+                && x.BatchId == studentClass.BatchId
+                && x.OrgId == studentClass.OrgId
+                && x.SubOrgId == studentClass.SubOrgId).FirstOrDefaultAsync();
+                if (_IsCurrentBatchId != null)
+                {
+                    var _student = await _context.Students.Where(x => x.StudentId == studentClass.StudentId).FirstOrDefaultAsync();
+                    _student.BatchId = studentClass.BatchId;
+                    _student.ClassId = studentClass.ClassId;
+                    _context.Students.Update(_student);
+                }
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

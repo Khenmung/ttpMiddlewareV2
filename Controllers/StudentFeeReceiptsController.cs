@@ -97,119 +97,7 @@ namespace ttpMiddleware.Controllers
                 //zero means cancelled
                 if (feeReceipt.Active == 0)
                 {
-                    //var paymentType = await _context.MasterItems.Where(x => x.MasterDataId == feeReceipt.PaymentTypeId
-                    //&& x.OrgId == feeReceipt.OrgId
-                    //&& x.SubOrgId == feeReceipt.SubOrgId
-                    //).Select(s => s.MasterDataName).FirstOrDefaultAsync();
-                    ////revert cash/bank account by crediting to cash account.
-                    //Int32? _generalAccountId = 0;
-                    //bool _debit = false;
-                    //if (paymentType.ToLower() == "ats")
-                    //{
-                    //    _generalAccountId = feeReceipt.AdjustedAccountId;
-                    //    _debit = true;
-                    //}
-                    //else
-                    //{
-                    //    if (paymentType.ToLower() == "cash")
-                    //        paymentType = "cash account";
-                    //    else if (paymentType.ToLower() == "online")
-                    //        paymentType = "bank account";
-                    //    _debit = false;
-                    //    var _cashOrBankAccountOrOther = await _context.GeneralLedgers.Where(x => x.GeneralLedgerName.ToLower() == paymentType.ToLower()
-                    //    && x.OrgId == feeReceipt.OrgId
-                    //    && x.SubOrgId == feeReceipt.SubOrgId
-                    //    ).FirstOrDefaultAsync();
-                    //    _generalAccountId = _cashOrBankAccountOrOther.GeneralLedgerId;
-                    //}
-                    //if (_generalAccountId > 0)
-                    //{
-                    //    var _cashAccountToAddToAccountingVoucher = new AccountingVoucher()
-                    //    {
-                    //        DocDate = DateTime.Now,
-                    //        PostingDate = DateTime.Now,
-                    //        Amount = feeReceipt.TotalAmount,
-                    //        GeneralLedgerAccountId = _generalAccountId,
-                    //        Debit = _debit,
-                    //        Active = 1,
-                    //        Deleted = false,
-                    //        FeeReceiptId = feeReceipt.StudentFeeReceiptId,
-                    //        Reference = feeReceipt.ReceiptNo.ToString(),//).Replace(" ", "").Substring(0, 10) + DateTime.Now.ToString("yyyyMMddHHmmss"),
-                    //        ShortText = "Cancelled",
-                    //        OrgId = feeReceipt.OrgId,
-                    //        SubOrgId = feeReceipt.SubOrgId,
-                    //        LedgerId = 0,
-                    //        Balance = 0,
-                    //        BaseAmount = feeReceipt.TotalAmount,
-                    //    };
-                    //    _context.AccountingVouchers.Add(_cashAccountToAddToAccountingVoucher);
-                    //}
-                    ////revert student account
-                    //revert tuition fee account
-                    //var _tuitionFeeAccount = await _context.GeneralLedgers.Where(x => x.GeneralLedgerName.ToLower() == "tuition fee"
-                    //&& x.OrgId == feeReceipt.OrgId
-                    //&& x.SubOrgId == feeReceipt.SubOrgId
-                    //).FirstOrDefaultAsync();
-                    //if (_tuitionFeeAccount != null)
-                    //{
-                    //    var _studentAccountToAddToAccountingVoucher = new AccountingVoucher()
-                    //    {
-                    //        DocDate = DateTime.Now,
-                    //        PostingDate = DateTime.Now,
-                    //        Amount = feeReceipt.TotalAmount,
-                    //        GeneralLedgerAccountId = _tuitionFeeAccount.GeneralLedgerId,
-                    //        Debit = true,
-                    //        Active = 1,
-                    //        Deleted = false,
-                    //        FeeReceiptId = feeReceipt.StudentFeeReceiptId,
-                    //        ShortText = "Cancelled Receipt no. " + feeReceipt.ReceiptNo,
-                    //        Reference = feeReceipt.ReceiptNo.ToString(),
-                    //        OrgId = feeReceipt.OrgId,
-                    //        SubOrgId = feeReceipt.SubOrgId,
-                    //        LedgerId = 0,
-                    //        Balance = 0,
-                    //        BaseAmount = feeReceipt.TotalAmount,
-                    //    };
-                    //    _context.AccountingVouchers.Add(_studentAccountToAddToAccountingVoucher);
-                    //}
-                    //else
-                    //{
-                    //    return BadRequest("tuition fee account not defined.");
-
-                    //}
-                    ////revert accounts ends here
-
-                    ////revert  discount allowed account
-                    //var _discountAllowedAccount = await _context.GeneralLedgers
-                    //    .Join(_context.AccountingVouchers,
-                    //    general => general.GeneralLedgerId,
-                    //    accv => accv.GeneralLedgerAccountId, (general, accv) => new { accv.FeeReceiptId, general.GeneralLedgerId, general.GeneralLedgerName, general.OrgId, accv.BaseAmount })
-                    //    .Where(x => x.GeneralLedgerName.ToLower() == "discount allowed"
-                    //    && x.FeeReceiptId == feeReceipt.StudentFeeReceiptId
-                    //    && x.OrgId == feeReceipt.OrgId).FirstOrDefaultAsync();
-                    //if (_discountAllowedAccount != null)
-                    //{
-                    //    var _discountAllowedToAddToAccountingVoucher = new AccountingVoucher()
-                    //    {
-                    //        DocDate = DateTime.Now,
-                    //        PostingDate = DateTime.Now,
-                    //        Amount = (decimal)_discountAllowedAccount.BaseAmount,
-                    //        GeneralLedgerAccountId = _discountAllowedAccount.GeneralLedgerId,
-                    //        Debit = false,
-                    //        Active = 1,
-                    //        Deleted = false,
-                    //        FeeReceiptId = feeReceipt.StudentFeeReceiptId,
-                    //        ShortText = "Receipt no. " + feeReceipt.ReceiptNo,
-                    //        OrgId = feeReceipt.OrgId,
-                    //        LedgerId = 0,
-                    //        Balance = 0,
-                    //        BaseAmount = (decimal)_discountAllowedAccount.BaseAmount
-                    //    };
-                    //    _context.AccountingVouchers.Add(_discountAllowedToAddToAccountingVoucher);
-                    //}
-                    ////revert discount allowed ends here
-
-                    //
+                                       //
                     var accountVouchers = await _context.AccountingVouchers
                         .Where(s => s.FeeReceiptId == feeReceipt.StudentFeeReceiptId
                         && s.OrgId == feeReceipt.OrgId
@@ -256,6 +144,7 @@ namespace ttpMiddleware.Controllers
                             {
                                 item.Active = 0;
                                 _context.AccountingLedgerTrialBalances.Update(item);
+
                                 var acledger = new AccountingLedgerTrialBalance()
                                 {
                                     LedgerId = 0,
@@ -263,6 +152,7 @@ namespace ttpMiddleware.Controllers
                                     SubOrgId = item.SubOrgId,
                                     Active = 1,
                                     Month = item.Month,
+                                    MonthDisplay = item.MonthDisplay,
                                     StudentClassId = item.StudentClassId,
                                     TotalCredit = 0,
                                     //GeneralLedgerId = _studentLedgerId,
@@ -411,7 +301,7 @@ namespace ttpMiddleware.Controllers
                     }
                     await _context.SaveChangesAsync();
 
-                    var Details = _AccountingVoucher.Where(x => x.Month == item.Month || x.Month == 0);
+                    var Details = _AccountingVoucher.Where(x => x.Month == item.MonthDisplay || x.Month == 0);
                     foreach (var detail in Details)
                     {
                         if (detail.AccountingVoucherId > 0)
@@ -551,7 +441,7 @@ namespace ttpMiddleware.Controllers
                         }
                         //not to be selected in the next accountdetailledger loop
                         if (detail.Month == 0)
-                            detail.Month = item.Month;
+                            detail.Month = item.MonthDisplay;
 
                     }
                     await _context.SaveChangesAsync();

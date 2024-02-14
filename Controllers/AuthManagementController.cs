@@ -1009,7 +1009,7 @@ namespace ttpMiddleware.Controllers
                     // only if any amount is not yet paid. TotalCredit == 0.
                     // Balance ==0 but not paid means free student fee
                     //fees can be updated only for current future months.
-                    else if (existing.TotalCredit == 0 && (existing.Balance > 0 || _invoice.Month >= today))
+                    else if (existing.TotalCredit == 0)// && (existing.Balance > 0 || _invoice.Month >= today))
                     {
                         existing.ClassId = _invoice.ClassId;
                         existing.SectionId = _invoice.SectionId;

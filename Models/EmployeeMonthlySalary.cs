@@ -39,6 +39,7 @@ namespace ttpMiddleware.Models
         [Required]
         public bool? Active { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
         [InverseProperty(nameof(EmpEmployee.EmployeeMonthlySalaries))]

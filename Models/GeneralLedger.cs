@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("GeneralLedger")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), Name = "NonClusteredOrgSubOrgActiveDelete")]
     public partial class GeneralLedger
     {
         public GeneralLedger()
@@ -61,6 +60,8 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public bool Deleted { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(AccountGroupId))]
         [InverseProperty("GeneralLedgerAccountGroups")]

@@ -37,6 +37,7 @@ namespace ttpMiddleware.Models
         public DateTime? UpdatedDate { get; set; }
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
         [InverseProperty(nameof(EmpEmployee.EmpWorkHistories))]

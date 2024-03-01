@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ttpMiddleware.CommonFunctions;
@@ -11,49 +12,49 @@ using ttpMiddleware.Models;
 
 namespace ttpMiddleware.Controllers
 {
-    [ODataRoutePrefix("[controller]")]
+    [ODataRoutePrefix("Students")]
     [EnableQuery]
-    public class StudentStaturesController : ProtectedController
+    public class DataSyncsController : ProtectedController
     {
         private readonly ttpauthContext _context;
 
-        public StudentStaturesController(ttpauthContext context)
+        public DataSyncsController(ttpauthContext context)
         {
             _context = context;
         }
 
-        // GET: api/StudentStatures
+        // GET: api/DataSyncs
         [HttpGet]
-        public IQueryable<StudentStature> GetStudentStatures()
+        public IQueryable<DataSync> GetDataSyncs()
         {
-            return _context.StudentStatures.AsQueryable().AsNoTracking();
+            return _context.DataSyncs.AsQueryable().AsNoTracking();
         }
 
-        // GET: api/StudentStatures/5
+        // GET: api/DataSyncs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<StudentStature>> GetStudentStature(int id)
+        public async Task<ActionResult<DataSync>> GetDataSync(int id)
         {
-            var studentStature = await _context.StudentStatures.FindAsync(id);
+            var dataSync = await _context.DataSyncs.FindAsync(id);
 
-            if (studentStature == null)
+            if (dataSync == null)
             {
                 return NotFound();
             }
 
-            return studentStature;
+            return dataSync;
         }
 
-        // PUT: api/StudentStatures/5
+        // PUT: api/DataSyncs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudentStature(int id, StudentStature studentStature)
+        public async Task<IActionResult> PutDataSync(int id, DataSync dataSync)
         {
-            if (id != studentStature.StudentStatureId)
+            if (id != dataSync.DataSyncId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(studentStature).State = EntityState.Modified;
+            _context.Entry(dataSync).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +62,7 @@ namespace ttpMiddleware.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentStatureExists(id))
+                if (!DataSyncExists(id))
                 {
                     return NotFound();
                 }
@@ -73,25 +74,25 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<StudentStature> studentStature)
+        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<DataSync> dataSync)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entity = await _context.StudentStatures.FindAsync(key);
+            var entity = await _context.DataSyncs.FindAsync(key);
             if (entity == null)
             {
                 return NotFound();
             }
-            studentStature.Patch(entity);
+            dataSync.Patch(entity);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentStatureExists(key))
+                if (!DataSyncExists(key))
                 {
                     return NotFound();
                 }
@@ -103,18 +104,17 @@ namespace ttpMiddleware.Controllers
 
             return Updated(entity);
         }
-        // POST: api/StudentStatures
+        // POST: api/DataSyncs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<StudentStature>> PostStudentStature([FromBody]StudentStature studentStature)
+        public async Task<ActionResult<DataSync>> PostDataSync([FromBody] DataSync dataSync)
         {
             try
             {
-
-                _context.StudentStatures.Add(studentStature);
+                _context.DataSyncs.Add(dataSync);
                 await _context.SaveChangesAsync();
 
-                return Ok(studentStature);
+                return Ok(dataSync);
             }
             catch(Exception ex)
             {
@@ -122,25 +122,25 @@ namespace ttpMiddleware.Controllers
             }
         }
 
-        // DELETE: api/StudentStatures/5
+        // DELETE: api/DataSyncs/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentStature(int id)
+        public async Task<IActionResult> DeleteDataSync(int id)
         {
-            var studentStature = await _context.StudentStatures.FindAsync(id);
-            if (studentStature == null)
+            var dataSync = await _context.DataSyncs.FindAsync(id);
+            if (dataSync == null)
             {
                 return NotFound();
             }
 
-            _context.StudentStatures.Remove(studentStature);
+            _context.DataSyncs.Remove(dataSync);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool StudentStatureExists(int id)
+        private bool DataSyncExists(int id)
         {
-            return _context.StudentStatures.Any(e => e.StudentStatureId == id);
+            return _context.DataSyncs.Any(e => e.DataSyncId == id);
         }
     }
 }

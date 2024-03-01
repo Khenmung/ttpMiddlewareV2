@@ -33,6 +33,8 @@ namespace ttpMiddleware.Models
         public DateTime? CreatedDate { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(OrgPaymentDetailId))]
         [InverseProperty(nameof(OrganizationPayment.OrgPaymentDetail))]

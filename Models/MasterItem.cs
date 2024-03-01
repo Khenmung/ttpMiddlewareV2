@@ -78,6 +78,8 @@ namespace ttpMiddleware.Models
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
         public bool? Confidential { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.MasterItems))]

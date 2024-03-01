@@ -64,7 +64,11 @@ namespace ttpMiddleware.Controllers
             //List<Student> _StudentList = new List<Student>();
             try
             {
+                short defaultFeeTypeId = 0;
+                bool isThisCurrentBatch = false;
                 var _batchName = "";
+                short _feetypeId = 0;
+                int _admittedStatusId = 0;
                 using var tran = _context.Database.BeginTransaction();
 
                 foreach (var x in jsonValues)
@@ -72,26 +76,37 @@ namespace ttpMiddleware.Controllers
                     _student = x.ToObject<Student>();
                     if (_batchName == "")
                     {
-                        _batchName = await _context.Batches.Where(x => x.BatchId == _student.BatchId
+                        var _batchobj = await _context.Batches.Where(x => x.BatchId == _student.BatchId
                         && x.OrgId == _student.OrgId
-                        //&& x.SubOrgId == _student.SubOrgId
-                        ).Select(s => s.BatchName).FirstOrDefaultAsync();
+                        //&& x.SubOrgId == _student.SubOrgId //suborgid not required with batches table.
+                        ).FirstOrDefaultAsync();
+                        if (_batchobj != null)
+                        {
+                            _batchName = _batchobj.BatchName;
+                            isThisCurrentBatch = _batchobj.CurrentBatch == 1 ? true : false;
+                        }
                     }
                     //var _feetypeId = _context.SchoolFeeTypes.Where(x => x.DefaultType == 1
                     //&& x.OrgId == _student.OrgId
                     //&& x.SubOrgId == _student.SubOrgId
                     //).Select(s => s.FeeTypeId).FirstOrDefault();
-                    short _feetypeId = 0;
+
                     if (_student.FeeTypeId > 0)
                     {
                         _feetypeId = _student.FeeTypeId;
                     }
                     else
                     {
-                        _feetypeId = _context.SchoolFeeTypes.Where(x => x.DefaultType == 1
-                        && x.OrgId == _student.OrgId
-                        && x.SubOrgId == _student.SubOrgId
-                        ).Select(s => s.FeeTypeId).FirstOrDefault();
+                        if (defaultFeeTypeId > 0)
+                            _feetypeId = defaultFeeTypeId;
+                        else
+                        {
+                            defaultFeeTypeId = _context.SchoolFeeTypes.Where(x => x.DefaultType == 1
+                            && x.OrgId == _student.OrgId
+                            && x.SubOrgId == _student.SubOrgId).Select(s => s.FeeTypeId).FirstOrDefault();
+
+                            _feetypeId = defaultFeeTypeId;
+                        }
                     }
                     try
                     {
@@ -118,7 +133,7 @@ namespace ttpMiddleware.Controllers
                                 await _context.SaveChangesAsync();
                             }
                         }
-                        else
+                        else //new student
                         {
                             var existingstudent = await _context.Students.Where(x => x.FirstName == _student.FirstName
                             && x.LastName == _student.LastName
@@ -135,31 +150,37 @@ namespace ttpMiddleware.Controllers
                                 await _context.SaveChangesAsync();
 
                                 _ClassId = Convert.ToInt32(_student.ClassAdmissionSought);
-
-                                var _admittedStatusId = await _context.MasterItems.Where(x => x.MasterDataName.ToLower() == "admitted"
-                                                         && x.OrgId == _student.OrgId
-                                                         && x.SubOrgId == _student.SubOrgId
-                                                         ).Select(s => s.MasterDataId).FirstOrDefaultAsync();
-
-                                int _duplicateId = _context.StudentClasses.Where(x => x.ClassId == _ClassId
-                                && x.StudentId == _student.StudentId && x.BatchId == _student.BatchId).Count();//.Select(x => x.StudentId).FirstOrDefault();
-                                int _admissionStatusId = _admittedStatusId == _student.AdmissionStatusId ? 1 : 0;
-                                if (_duplicateId == 0 && _ClassId != 0)
+                                if (_admittedStatusId == 0)
                                 {
-                                    var _studentcount = await _context.StudentClasses.Where(x =>
-                                    x.OrgId == _student.OrgId
-                                    && x.SubOrgId == _student.SubOrgId
-                                    && x.BatchId == _student.BatchId)
-                                        .Select(x => x.StudentId).ToListAsync();
-                                    var _count = _studentcount.Count + 1;
-                                    var _admissionno = _batchName.Split('-')[0] + _count.ToString();
+                                    _admittedStatusId = await _context.MasterItems.Where(x => x.MasterDataName.ToLower() == "admitted"
+                                                             && x.OrgId == _student.OrgId
+                                                             && x.SubOrgId == _student.SubOrgId
+                                                             ).Select(s => s.MasterDataId).FirstOrDefaultAsync();
+                                }
+
+                                var _duplicateId = await _context.StudentClasses.Where(x => x.ClassId == _ClassId
+                                && x.StudentId == _student.StudentId && x.BatchId == _student.BatchId).FirstOrDefaultAsync();//.Select(x => x.StudentId).FirstOrDefault();
+
+                                bool _isAdmitted = _admittedStatusId == _student.AdmissionStatusId;
+
+                                if (_duplicateId == null && _ClassId != 0)
+                                {
+                                    //var _studentcount = await _context.StudentClasses.Where(x =>
+                                    //x.OrgId == _student.OrgId
+                                    //&& x.SubOrgId == _student.SubOrgId
+                                    //&& x.BatchId == _student.BatchId)
+                                    //    .Select(x => x.StudentId).ToListAsync();
+                                    //var _count = _studentcount.Count + 1;
+                                    //var _admissionno = _batchName.Split('-')[0] + _count.ToString();
                                     _studentclass = new StudentClass()
                                     {
-                                        AdmissionNo = _admissionno,
+                                        AdmissionNo = "",// _admissionno,
                                         StudentId = _student.StudentId,
                                         ClassId = _ClassId,
-                                        Active = (byte)_admissionStatusId,
+                                        Active = 1,
+                                        Admitted = _isAdmitted,
                                         FeeTypeId = _feetypeId,
+                                        IsCurrent = isThisCurrentBatch,
                                         BatchId = (short)_student.BatchId,
                                         SemesterId = _student.SemesterId,
                                         SectionId = _student.SectionId,
@@ -167,7 +188,7 @@ namespace ttpMiddleware.Controllers
                                         OrgId = _student.OrgId,
                                         SubOrgId = _student.SubOrgId,
                                         Remarks = _student.Notes,
-                                        AdmissionDate = _student.AdmissionDate,
+                                        AdmissionDate = _student.AdmissionDate == null ? DateTime.Now : _student.AdmissionDate,
                                         CreatedDate = DateTime.Now
                                     };
 
@@ -175,27 +196,28 @@ namespace ttpMiddleware.Controllers
 
                                     await _context.SaveChangesAsync();
 
-                                    //var _studentAccountNatureId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "assets" && x.OrgId == 0 && x.Active == true)
-                                    //    .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
-                                    //var _studentAccountGroupId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "current assets" && x.OrgId == _studentclass.OrgId)
-                                    //    .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
-                                    //var _studentAccountSubGroupId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "account receivables" && x.OrgId == _studentclass.OrgId)
-                                    //    .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
-                                    //var _studentLedger = new GeneralLedger()
-                                    //{
-                                    //    GeneralLedgerName = _student.FirstName + _lastName + "-" + _admissionno,
-                                    //    StudentClassId = _studentclass.StudentClassId,
-                                    //    OrgId = _studentclass.OrgId,
-                                    //    Active = 1,
-                                    //    BatchId = _studentclass.BatchId,
-                                    //    AccountNatureId = _studentAccountNatureId,
-                                    //    AccountGroupId = _studentAccountGroupId,
-                                    //    AccountSubGroupId = _studentAccountSubGroupId,
-                                    //    Deleted = false,
-                                    //    CreatedDate = DateTime.Now
-                                    //};
-                                    //_context.GeneralLedgers.Add(_studentLedger);
-                                    //await _context.SaveChangesAsync();
+                                    
+                                    var studentfeetype = new StudentFeeType()
+                                    {
+                                        Active = true,
+                                        BatchId = (short)_student.BatchId,
+                                        CreatedBy = _student.CreatedBy,
+                                        CreatedDate = _student.CreatedDate,
+                                        IsCurrent = true,
+                                        Deleted = false,
+                                        FeeTypeId = defaultFeeTypeId,
+                                        StudentClassId = _studentclass.StudentClassId,
+                                        FromMonth = 0,
+                                        ToMonth = 0,
+                                        OrgId = _student.OrgId,
+                                        SubOrgId = _student.SubOrgId,
+                                        StudentFeeTypeId = 0
+                                    };
+
+                                    _context.StudentFeeTypes.Add(studentfeetype);
+                                    await _context.SaveChangesAsync();
+                                    ////////////////////
+
                                 }
 
                             }
@@ -203,6 +225,7 @@ namespace ttpMiddleware.Controllers
                     }
                     catch (Exception ex)
                     {
+                        //tran.Rollback();
                         return BadRequest(ex);
                     }
                 }
@@ -211,9 +234,10 @@ namespace ttpMiddleware.Controllers
                 {
                     PID = _student.PID,
                     StudentId = _student.StudentId,
-                    StudentClassId= _studentclass.StudentClassId,
+                    StudentClassId = _studentclass.StudentClassId,
                     ClassId = _studentclass.ClassId,
                     Active = _studentclass.Active,
+                    Admitted = _studentclass.Admitted,
                     FeeTypeId = _studentclass.FeeTypeId,
                     BatchId = _studentclass.BatchId,
                     SemesterId = _student.SemesterId,
@@ -277,24 +301,31 @@ namespace ttpMiddleware.Controllers
                 && x.SubOrgId == entity.SubOrgId
                 ).FirstOrDefault();
 
-                var _admittedStatusId = await _context.MasterItems.Where(x => x.MasterDataName.ToLower() == "admitted"
+                var _masterAdmittedStatusId = await _context.MasterItems.Where(x => x.MasterDataName.ToLower() == "admitted"
                                                      && x.OrgId == entity.OrgId
                                                      && x.SubOrgId == entity.SubOrgId
                                                      ).Select(s => s.MasterDataId).FirstOrDefaultAsync();
 
-                var _admissionStatusId = _admittedStatusId == entity.AdmissionStatusId ? 1 : 0;
-                var _active = entity.Active == 0 ? 0 : _admissionStatusId;
+                var _admissionStatusId = _masterAdmittedStatusId == entity.AdmissionStatusId ? true : false;
+                var _active = 0;// entity.Active == 0 ? 0 : _admissionStatusId;
                 if (studcls != null)
                 {
-                    //in case of re-activation, set current batch studentclassid to true;
-                    if (_active == 1)
-                        studcls.IsCurrent = true;
+                    studcls.Active = (byte)entity.Active;
 
-                    studcls.Active = (byte)_active;
+                    //cant say student is admitted even though he is active
+                    if (entity.Active == 1)
+                        studcls.IsCurrent = true;
+                    else
+                    {
+                        //if inactive, admitted should be false;
+                        studcls.Admitted = false;
+                    }
+
+
                     studcls.AdmissionDate = entity.AdmissionDate;
                     _context.StudentClasses.Update(studcls);
 
-                   
+
                     //only if previous email id is empty //if (userexist != null)
                     if (entity.EmailAddress != null && entity.EmailAddress.Length > 0)
                     {
@@ -305,19 +336,6 @@ namespace ttpMiddleware.Controllers
                             await _userManager.UpdateAsync(userexist);
                         }
 
-                        //        var common = new commonfunctions(_configuration, _userManager, _context);
-
-                        //        var user = new UserRegistrationDto()
-                        //        {
-                        //            Email = entity.EmailAddress,
-                        //            ContactNo = entity.ContactNo,
-                        //            Username = entity.EmailAddress,
-                        //            Password = entity.FirstName.Replace(" ", "").Substring(0, 2) + "@" + Convert.ToDateTime(entity.DOB).ToString("ddMMyyyy")
-                        //        };
-
-                        //        var message = await common.RegisterUser(user, (int)entity.OrgId, "student");
-                        //        entity.UserId = message;
-                        //    }
                     }
                 }
                 else
@@ -334,7 +352,7 @@ namespace ttpMiddleware.Controllers
 
                         var _batchName = await _context.Batches.Where(x => x.BatchId == entity.BatchId
                         && x.OrgId == entity.OrgId
-                        //&& x.SubOrgId == entity.SubOrgId
+                        //&& x.SubOrgId == entity.SubOrgId // batch is not related to suborgid
                         ).Select(s => s.BatchName).FirstOrDefaultAsync();
                         var _admissionno = _batchName.Split('-')[0] + _count.ToString();
                         var _studentclass = new StudentClass()
@@ -345,6 +363,7 @@ namespace ttpMiddleware.Controllers
                             SectionId = entity.SectionId,
                             SemesterId = entity.SemesterId,
                             Active = (byte)_active,//(byte)_admissionStatusId,
+                            Admitted = _admissionStatusId,
                             FeeTypeId = _feetypeId,
                             BatchId = (short)entity.BatchId,
                             OrgId = entity.OrgId,
@@ -355,26 +374,27 @@ namespace ttpMiddleware.Controllers
                         _context.StudentClasses.Add(_studentclass);
                         await _context.SaveChangesAsync();
 
-                        //var _studentAccountNatureId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "assets" && x.OrgId == 0)
-                        //    .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
-                        //var _studentAccountGroupId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "current assets" && x.OrgId == _studentclass.OrgId)
-                        //    .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
-                        //var _studentAccountSubGroupId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "account receivables" && x.OrgId == _studentclass.OrgId)
-                        //    .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
-                        //var _studentLedger = new GeneralLedger()
-                        //{
-                        //    GeneralLedgerName = entity.FirstName + _lastName + "-" + entity.AdmissionNo,
-                        //    StudentClassId = _studentclass.StudentClassId,
-                        //    OrgId = _studentclass.OrgId,
-                        //    Active = 1,
-                        //    BatchId= _studentclass.BatchId,
-                        //    AccountNatureId = _studentAccountNatureId,
-                        //    AccountGroupId = _studentAccountGroupId,
-                        //    AccountSubGroupId = _studentAccountSubGroupId,
-                        //    Deleted = false,
-                        //    CreatedDate = DateTime.Now
-                        //};
-                        //_context.GeneralLedgers.Add(_studentLedger);
+                        var defaultFeeTypeId = await _context.SchoolFeeTypes.Where(x => x.DefaultType == 1
+                        && x.BatchId == entity.BatchId).Select(s => s.FeeTypeId).FirstOrDefaultAsync();
+
+                        var studentfeetype = new StudentFeeType()
+                        {
+                            Active = true,
+                            BatchId = (short)entity.BatchId,
+                            CreatedBy = entity.CreatedBy,
+                            CreatedDate = entity.CreatedDate,
+                            IsCurrent = true,
+                            Deleted = false,
+                            FeeTypeId = defaultFeeTypeId,
+                            StudentClassId = _studentclass.StudentClassId,
+                            FromMonth = 0,
+                            ToMonth = 0,
+                            OrgId = entity.OrgId,
+                            SubOrgId = entity.SubOrgId,
+                            StudentFeeTypeId = 0
+                        };
+
+                        _context.StudentFeeTypes.Add(studentfeetype);
 
                     }
                 }

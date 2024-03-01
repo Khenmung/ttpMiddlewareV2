@@ -39,6 +39,7 @@ namespace ttpMiddleware.Models
         public short DisplayOrder { get; set; }
         [StringLength(256)]
         public string Description { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(ComponentTypeId))]
         [InverseProperty(nameof(MasterItem.EmpComponents))]

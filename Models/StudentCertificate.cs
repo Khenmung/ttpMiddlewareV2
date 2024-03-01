@@ -30,6 +30,7 @@ namespace ttpMiddleware.Models
         public byte Active { get; set; }
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("StudentCertificates")]

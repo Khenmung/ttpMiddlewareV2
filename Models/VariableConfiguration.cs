@@ -38,6 +38,7 @@ namespace ttpMiddleware.Models
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.VariableConfigurations))]

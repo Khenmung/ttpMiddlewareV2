@@ -32,5 +32,7 @@ namespace ttpMiddleware.Models
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
     }
 }

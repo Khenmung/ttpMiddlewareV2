@@ -56,6 +56,8 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public int WithHeldResultStatusId { get; set; }
         public short Sequence { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("Exams")]

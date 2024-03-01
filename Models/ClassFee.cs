@@ -28,7 +28,6 @@ namespace ttpMiddleware.Models
         public decimal Amount { get; set; }
         public short BatchId { get; set; }
         public int Month { get; set; }
-        public int MonthDisplay { get; set; }
         public byte? Recurring { get; set; }
         public byte Active { get; set; }
         public int? LocationId { get; set; }
@@ -46,6 +45,9 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public int SemesterId { get; set; }
         public int SectionId { get; set; }
+        public int MonthDisplay { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ClassId))]
         [InverseProperty(nameof(ClassMaster.ClassFees))]

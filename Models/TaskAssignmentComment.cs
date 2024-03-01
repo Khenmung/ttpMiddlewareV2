@@ -29,6 +29,8 @@ namespace ttpMiddleware.Models
         public byte Active { get; set; }
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.TaskAssignmentComments))]

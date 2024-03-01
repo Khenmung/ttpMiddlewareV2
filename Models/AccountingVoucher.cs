@@ -54,6 +54,7 @@ namespace ttpMiddleware.Models
         public bool Deleted { get; set; }
         public int ActivityTypeId { get; set; }
         public int LedgerPostingId { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(ClassFeeId))]
         [InverseProperty("AccountingVouchers")]

@@ -37,6 +37,8 @@ namespace ttpMiddleware.Models
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [InverseProperty(nameof(QuestionBank.Syllabus))]
         public virtual ICollection<QuestionBank> QuestionBanks { get; set; }

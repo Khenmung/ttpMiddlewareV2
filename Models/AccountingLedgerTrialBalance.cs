@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("AccountingLedgerTrialBalance")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(TotalDebit), nameof(Balance), nameof(StudentClassId), nameof(Month), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20231005-194615")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(TotalDebit), nameof(Balance), nameof(StudentClassId), nameof(MonthDisplay), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20231005-194615")]
     public partial class AccountingLedgerTrialBalance
     {
         public AccountingLedgerTrialBalance()
@@ -22,9 +22,7 @@ namespace ttpMiddleware.Models
         public int? StudentClassId { get; set; }
         public int? EmployeeId { get; set; }
         public int? GeneralLedgerId { get; set; }
-        public int? Month { get; set; }
-        public int MonthDisplay { get; set; }
-
+        public int? MonthDisplay { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal BaseAmount { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
@@ -49,6 +47,8 @@ namespace ttpMiddleware.Models
         public int ClassId { get; set; }
         public int SemesterId { get; set; }
         public int SectionId { get; set; }
+        public int Month { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("AccountingLedgerTrialBalances")]

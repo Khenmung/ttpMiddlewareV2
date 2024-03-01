@@ -36,6 +36,8 @@ namespace ttpMiddleware.Models
         [StringLength(1000)]
         public string Description { get; set; }
         public int? SessionId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
         [InverseProperty(nameof(EmpEmployee.EmployeeActivities))]

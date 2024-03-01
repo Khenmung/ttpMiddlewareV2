@@ -8,22 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    public partial class Holiday
+    [Table("DataSync")]
+    public partial class DataSync
     {
         [Key]
-        public int HolidayId { get; set; }
-        [StringLength(100)]
-        public string Title { get; set; }
-        [StringLength(256)]
-        public string Description { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? StartDate { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? EndDate { get; set; }
-        public int? HolidayTypeId { get; set; }
-        public short? OrgId { get; set; }
-        public short? BatchId { get; set; }
-        public byte? Active { get; set; }
+        public int DataSyncId { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string TableName { get; set; }
+        [Required]
+        [StringLength(2000)]
+        public string Text { get; set; }
+        [Required]
+        [StringLength(10)]
+        public string DataMode { get; set; }
+        public bool Active { get; set; }
         [StringLength(450)]
         public string CreatedBy { get; set; }
         [Column(TypeName = "datetime")]
@@ -32,8 +31,11 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
-        public bool Deleted { get; set; }
+        public short OrgId { get; set; }
         public int SubOrgId { get; set; }
+        public short BatchId { get; set; }
+        public bool Deleted { get; set; }
+        public bool Synced { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
     }

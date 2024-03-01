@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("StudentClass")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(IsCurrent), nameof(StudentClassId), nameof(ClassId), nameof(Deleted), Name = "Indx_StudentclassOrgId_BatchId_StudentClassId_ClassId_")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(ClassId), nameof(IsCurrent), nameof(StudentClassId), nameof(Deleted), Name = "Indx_StudentclassOrgId_BatchId_StudentClassId_ClassId_")]
     public partial class StudentClass
     {
         public StudentClass()
@@ -24,6 +24,7 @@ namespace ttpMiddleware.Models
             StudentCertificates = new HashSet<StudentCertificate>();
             StudentClassSubjects = new HashSet<StudentClassSubject>();
             StudentFeeReceipts = new HashSet<StudentFeeReceipt>();
+            StudentFeeTypes = new HashSet<StudentFeeType>();
             StudentStatures = new HashSet<StudentStature>();
             TaskAssignments = new HashSet<TaskAssignment>();
         }
@@ -63,6 +64,9 @@ namespace ttpMiddleware.Models
         public bool Deleted { get; set; }
         [Required]
         public bool? IsCurrent { get; set; }
+        public bool Admitted { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("StudentClasses")]
@@ -99,6 +103,8 @@ namespace ttpMiddleware.Models
         public virtual ICollection<StudentClassSubject> StudentClassSubjects { get; set; }
         [InverseProperty(nameof(StudentFeeReceipt.StudentClass))]
         public virtual ICollection<StudentFeeReceipt> StudentFeeReceipts { get; set; }
+        [InverseProperty(nameof(StudentFeeType.StudentClass))]
+        public virtual ICollection<StudentFeeType> StudentFeeTypes { get; set; }
         [InverseProperty(nameof(StudentStature.StudentClass))]
         public virtual ICollection<StudentStature> StudentStatures { get; set; }
         [InverseProperty(nameof(TaskAssignment.AssignedToClass))]

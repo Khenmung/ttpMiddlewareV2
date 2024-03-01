@@ -38,6 +38,8 @@ namespace ttpMiddleware.Models
         public int DepartmentId { get; set; }
         [StringLength(256)]
         public string Description { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(EmpComponentId))]
         [InverseProperty("EmpEmployeeSalaryComponents")]

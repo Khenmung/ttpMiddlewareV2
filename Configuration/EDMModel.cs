@@ -23,10 +23,8 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<ClassFee>("ClassFees");
             builder.EntitySet<Student>("Students");
             builder.EntitySet<StudentClass>("StudentClasses");
-            //builder.EntitySet<StudentFeePayment>("StudentFeePayments");
             builder.EntitySet<StudentFeeReceipt>("StudentFeeReceipts");
             builder.EntitySet<TaskConfiguration>("TaskConfigurations");
-            //builder.EntitySet<ApplicationUser>("ApplicationUsers");
             builder.EntitySet<RoleUser>("RoleUsers");
             builder.EntitySet<Attendance>("Attendances");
             builder.EntitySet<Organization>("Organizations");
@@ -35,7 +33,6 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<ExamSlot>("ExamSlots");
             builder.EntitySet<SlotAndClassSubject>("SlotAndClassSubjects");
             builder.EntitySet<StudentClassSubject>("StudentClassSubjects");
-            //builder.EntitySet<StudentActivity>("StudentActivities");
             builder.EntitySet<SubjectType>("SubjectTypes");
             builder.EntitySet<ClassSubjectMarkComponent>("ClassSubjectMarkComponents");
             builder.EntitySet<ExamStudentResult>("ExamStudentResults");
@@ -50,7 +47,6 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<EmployeeFamily>("EmployeeFamilies");
             builder.EntitySet<LeaveEmployeeLeaf>("LeaveEmployeeLeaves");
             builder.EntitySet<EmployeeMonthlySalary>("EmployeeMonthlySalaries");
-            builder.EntitySet<EmpEmployeeSalaryComponent>("EmpEmployeeSalaryComponents");
             builder.EntitySet<EmpComponent>("EmpComponents");
             builder.EntitySet<EmpEmployeeSkill>("EmpEmployeeSkills");
             builder.EntitySet<EmployeeEducationHistory>("EmployeeEducationHistories");
@@ -81,7 +77,6 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<ApplicationPrice>("ApplicationPrices");
             builder.EntitySet<InventoryItem>("InventoryItems");
             builder.EntitySet<CustomerInvoice>("CustomerInvoices");
-            //builder.EntitySet<CustomerApp>("CustomerApps");
             builder.EntitySet<CustomerInvoiceComponent>("CustomerInvoiceComponents");
             builder.EntitySet<ClassMaster>("ClassMasters");
             builder.EntitySet<ClassGroup>("ClassGroups");
@@ -96,10 +91,8 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<OrganizationPayment>("OrganizationPayments");
             builder.EntitySet<GeneralLedger>("GeneralLedgers");
             builder.EntitySet<ClassEvaluation>("ClassEvaluations");
-            //builder.EntitySet<EmployeeEvaluation>("EmployeeEvaluations");
             builder.EntitySet<StudentEvaluation>("StudentEvaluations");
             builder.EntitySet<StudentEvaluationResult>("StudentEvaluationResults");
-            //builder.EntitySet<EmployeeEvaluationDetail>("EmployeeEvaluationDetails");
             builder.EntitySet<ClassEvaluationOption>("ClassEvaluationOptions");
             builder.EntitySet<EvaluationExamMap>("EvaluationExamMaps");
             builder.EntitySet<EvaluationMaster>("EvaluationMasters");
@@ -128,8 +121,6 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<CertificateConfig>("CertificateConfigs");
             builder.EntitySet<SyllabusDetail>("SyllabusDetails");
             builder.EntitySet<EmployeeActivity>("EmployeeActivities");
-            //builder.EntitySet<EmployeeGroupActivityParticipant>("EmployeeGroupActivityParticipants");
-            //builder.EntitySet<EmployeeGeneratedCertificate>("EmployeeGeneratedCertificates");
             builder.EntitySet<ExamMarkConfig>("ExamMarkConfigs");
             builder.EntitySet<ExamClassGroupMap>("ExamClassGroupMaps");
             builder.EntitySet<EmployeeAttendance>("EmployeeAttendances");
@@ -137,9 +128,10 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<SubjectComponent>("SubjectComponents");
             builder.EntitySet<EmpEmployeeSalaryComponent>("EmpEmployeeSalaryComponents");
             builder.EntitySet<EvaluationResultMark>("EvaluationResultMarks");
-            //builder.EntitySet<SubjectComponent>("SubjectComponents");
             builder.EntitySet<StudentStature>("StudentStatures");
             builder.EntitySet<LedgerPosting>("LedgerPostings");
+            builder.EntitySet<StudentFeeType>("StudentFeeTypes");
+            builder.EntitySet<DataSync>("DataSyncs");
 
             return builder.GetEdmModel();
         }

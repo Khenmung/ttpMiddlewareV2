@@ -30,6 +30,8 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         [Column(TypeName = "decimal(6, 2)")]
         public decimal MarkConvertTo { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ClassGroupId))]
         [InverseProperty("ExamClassGroupMaps")]

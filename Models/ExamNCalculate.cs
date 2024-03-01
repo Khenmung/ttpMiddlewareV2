@@ -32,6 +32,8 @@ namespace ttpMiddleware.Models
         public string Formula { get; set; }
         public int CalculateCategoryId { get; set; }
         public byte Sequence { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ExamId))]
         [InverseProperty("ExamNCalculates")]

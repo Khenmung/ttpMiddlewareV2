@@ -8,37 +8,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Table("EvaluationResultMark")]
-    public partial class EvaluationResultMark
+    [Table("StudentFeeType")]
+    public partial class StudentFeeType
     {
         [Key]
-        public int EvaluationResultMarkId { get; set; }
+        public int StudentFeeTypeId { get; set; }
+        public short FeeTypeId { get; set; }
         public int StudentClassId { get; set; }
-        public int ClassId { get; set; }
-        public int SectionId { get; set; }
-        public int SemesterId { get; set; }
-        public int EvaluationExamMapId { get; set; }
-        [Column(TypeName = "decimal(5, 2)")]
-        public decimal TotalMark { get; set; }
-        public short Rank { get; set; }
+        public int FromMonth { get; set; }
+        public int ToMonth { get; set; }
         public bool Active { get; set; }
+        public bool IsCurrent { get; set; }
         public short OrgId { get; set; }
         public int SubOrgId { get; set; }
         public bool Deleted { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? CreatedDate { get; set; }
-        [StringLength(450)]
-        public string CreatedBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
         [StringLength(450)]
+        public string CreatedBy { get; set; }
+        [StringLength(450)]
         public string UpdatedBy { get; set; }
-        [StringLength(256)]
-        public string Comments { get; set; }
-        public int TestStatusId { get; set; }
-        [Column(TypeName = "decimal(5, 2)")]
-        public decimal Pc { get; set; }
+        public short BatchId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+
+        [ForeignKey(nameof(FeeTypeId))]
+        [InverseProperty(nameof(SchoolFeeType.StudentFeeTypes))]
+        public virtual SchoolFeeType FeeType { get; set; }
+        [ForeignKey(nameof(StudentClassId))]
+        [InverseProperty("StudentFeeTypes")]
+        public virtual StudentClass StudentClass { get; set; }
     }
 }

@@ -40,6 +40,8 @@ namespace ttpMiddleware.Models
         public string Description { get; set; }
         [StringLength(256)]
         public string ExcludeDays { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("LeavePolicies")]

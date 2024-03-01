@@ -35,6 +35,8 @@ namespace ttpMiddleware.Models
         [Column(TypeName = "decimal(5, 1)")]
         public decimal CB { get; set; }
         public int DepartmentId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("LeaveBalances")]

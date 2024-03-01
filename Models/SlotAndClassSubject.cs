@@ -31,6 +31,8 @@ namespace ttpMiddleware.Models
         public int SemesterId { get; set; }
         public int SectionId { get; set; }
         public int ClassId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("SlotAndClassSubjects")]

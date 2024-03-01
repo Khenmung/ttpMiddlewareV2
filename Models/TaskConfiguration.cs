@@ -44,6 +44,8 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.TaskConfigurations))]

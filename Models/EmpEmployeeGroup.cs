@@ -35,6 +35,7 @@ namespace ttpMiddleware.Models
         public string Remarks { get; set; }
         public short? ApprovedBy { get; set; }
         public byte Active { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.EmpEmployeeGroupOrgs))]

@@ -299,6 +299,37 @@ namespace ttpMiddleware.Controllers
                 }
 
                 _context.StudentClasses.Add(studentClass);
+                await _context.SaveChangesAsync();
+
+                var defaultFeeTypeId = 0;
+
+                if (studentClass.FeeTypeId !=null && studentClass.FeeTypeId > 0)
+                    defaultFeeTypeId = (short)studentClass.FeeTypeId;
+                else
+                {
+                    defaultFeeTypeId = await _context.SchoolFeeTypes.Where(x => x.DefaultType == 1
+                                        && x.BatchId == studentClass.BatchId).Select(s => s.FeeTypeId).FirstOrDefaultAsync();
+                }
+
+
+                var studentfeetype = new StudentFeeType()
+                {
+                    Active = true,
+                    BatchId = studentClass.BatchId,
+                    CreatedBy = studentClass.CreatedBy,
+                    CreatedDate = studentClass.CreatedDate,
+                    IsCurrent = true,
+                    Deleted = false,
+                    FeeTypeId = (short)defaultFeeTypeId,
+                    StudentClassId = studentClass.StudentClassId,
+                    FromMonth = 0,
+                    ToMonth = 0,
+                    OrgId = studentClass.OrgId,
+                    SubOrgId = studentClass.SubOrgId,
+                    StudentFeeTypeId = 0
+                };
+
+                _context.StudentFeeTypes.Add(studentfeetype);
 
                 var allstudentcls = await _context.StudentClasses.Where(x => x.StudentId == studentClass.StudentId
                 && x.StudentClassId != studentClass.StudentClassId).ToListAsync();
@@ -307,11 +338,11 @@ namespace ttpMiddleware.Controllers
                     item.IsCurrent = false;
                     _context.Update(item);
                 }
+
                 //checking if the batchid is the current batchid then only update students
                 var _IsCurrentBatchId = await _context.Batches.Where(x => x.CurrentBatch == 1
                 && x.BatchId == studentClass.BatchId
-                && x.OrgId == studentClass.OrgId
-                && x.SubOrgId == studentClass.SubOrgId).FirstOrDefaultAsync();
+                && x.OrgId == studentClass.OrgId).FirstOrDefaultAsync();
                 if (_IsCurrentBatchId != null)
                 {
                     var _student = await _context.Students.Where(x => x.StudentId == studentClass.StudentId).FirstOrDefaultAsync();

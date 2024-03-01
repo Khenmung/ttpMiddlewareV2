@@ -49,6 +49,8 @@ namespace ttpMiddleware.Models
         [StringLength(8)]
         public string StartTime { get; set; }
         public int ETypeId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [InverseProperty(nameof(ClassEvaluation.EvaluationMaster))]
         public virtual ICollection<ClassEvaluation> ClassEvaluations { get; set; }

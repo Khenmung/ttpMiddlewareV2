@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(PID), nameof(StudentId), nameof(Deleted), Name = "Indx_StudentOrgId_StudentId_ParentId")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(PID), nameof(StudentId), nameof(ClassId), nameof(Deleted), Name = "Indx_StudentOrgId_StudentId_ParentId")]
     public partial class Student
     {
         public Student()
@@ -136,6 +136,8 @@ namespace ttpMiddleware.Models
         public short FeeTypeId { get; set; }
         public int Remark2Id { get; set; }
         public int ClassId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BloodgroupId))]
         [InverseProperty(nameof(MasterItem.StudentBloodgroups))]

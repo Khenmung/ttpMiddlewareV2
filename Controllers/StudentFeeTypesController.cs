@@ -4,56 +4,57 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ttpMiddleware.CommonFunctions;
 using ttpMiddleware.Models;
+using ttpMiddleware.CommonFunctions;
 
 namespace ttpMiddleware.Controllers
 {
     [ODataRoutePrefix("[controller]")]
     [EnableQuery]
-    public class StudentStaturesController : ProtectedController
+    public class StudentFeeTypesController : ProtectedController
     {
         private readonly ttpauthContext _context;
 
-        public StudentStaturesController(ttpauthContext context)
+        public StudentFeeTypesController(ttpauthContext context)
         {
             _context = context;
         }
 
-        // GET: api/StudentStatures
+        // GET: api/StudentFeeTypes
         [HttpGet]
-        public IQueryable<StudentStature> GetStudentStatures()
+        public IQueryable<StudentFeeType> GetStudentFeeTypes()
         {
-            return _context.StudentStatures.AsQueryable().AsNoTracking();
+            return _context.StudentFeeTypes.AsQueryable().AsNoTracking();
         }
 
-        // GET: api/StudentStatures/5
+        // GET: api/StudentFeeTypes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<StudentStature>> GetStudentStature(int id)
+        public async Task<ActionResult<StudentFeeType>> GetStudentFeeType(int id)
         {
-            var studentStature = await _context.StudentStatures.FindAsync(id);
+            var studentFeeType = await _context.StudentFeeTypes.FindAsync(id);
 
-            if (studentStature == null)
+            if (studentFeeType == null)
             {
                 return NotFound();
             }
 
-            return studentStature;
+            return studentFeeType;
         }
 
-        // PUT: api/StudentStatures/5
+        // PUT: api/StudentFeeTypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudentStature(int id, StudentStature studentStature)
+        public async Task<IActionResult> PutStudentFeeType(int id, StudentFeeType studentFeeType)
         {
-            if (id != studentStature.StudentStatureId)
+            if (id != studentFeeType.StudentFeeTypeId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(studentStature).State = EntityState.Modified;
+            _context.Entry(studentFeeType).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +62,7 @@ namespace ttpMiddleware.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentStatureExists(id))
+                if (!StudentFeeTypeExists(id))
                 {
                     return NotFound();
                 }
@@ -73,25 +74,25 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<StudentStature> studentStature)
+        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<StudentFeeType> studentFeeType)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entity = await _context.StudentStatures.FindAsync(key);
+            var entity = await _context.StudentFeeTypes.FindAsync(key);
             if (entity == null)
             {
                 return NotFound();
             }
-            studentStature.Patch(entity);
+            studentFeeType.Patch(entity);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentStatureExists(key))
+                if (!StudentFeeTypeExists(key))
                 {
                     return NotFound();
                 }
@@ -103,44 +104,36 @@ namespace ttpMiddleware.Controllers
 
             return Updated(entity);
         }
-        // POST: api/StudentStatures
+        // POST: api/StudentFeeTypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<StudentStature>> PostStudentStature([FromBody]StudentStature studentStature)
+        public async Task<ActionResult<StudentFeeType>> PostStudentFeeType([FromBody]StudentFeeType studentFeeType)
         {
-            try
-            {
+            _context.StudentFeeTypes.Add(studentFeeType);
+            await _context.SaveChangesAsync();
 
-                _context.StudentStatures.Add(studentStature);
-                await _context.SaveChangesAsync();
-
-                return Ok(studentStature);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return Ok(studentFeeType);
         }
 
-        // DELETE: api/StudentStatures/5
+        // DELETE: api/StudentFeeTypes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentStature(int id)
+        public async Task<IActionResult> DeleteStudentFeeType(int id)
         {
-            var studentStature = await _context.StudentStatures.FindAsync(id);
-            if (studentStature == null)
+            var studentFeeType = await _context.StudentFeeTypes.FindAsync(id);
+            if (studentFeeType == null)
             {
                 return NotFound();
             }
 
-            _context.StudentStatures.Remove(studentStature);
+            _context.StudentFeeTypes.Remove(studentFeeType);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool StudentStatureExists(int id)
+        private bool StudentFeeTypeExists(int id)
         {
-            return _context.StudentStatures.Any(e => e.StudentStatureId == id);
+            return _context.StudentFeeTypes.Any(e => e.StudentFeeTypeId == id);
         }
     }
 }

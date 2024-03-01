@@ -40,6 +40,8 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public bool AssignRank { get; set; }
         public int ResultCategoryId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ExamId))]
         [InverseProperty("StudentGrades")]

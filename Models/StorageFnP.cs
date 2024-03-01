@@ -45,6 +45,8 @@ namespace ttpMiddleware.Models
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
         public int CategoryId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(DocTypeId))]
         [InverseProperty(nameof(MasterItem.StorageFnPs))]

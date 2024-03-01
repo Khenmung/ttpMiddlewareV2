@@ -35,6 +35,8 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public int SectionId { get; set; }
         public int SemesterId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ClassId))]
         [InverseProperty(nameof(ClassMaster.ExamMarkConfigs))]

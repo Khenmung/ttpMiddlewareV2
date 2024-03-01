@@ -995,7 +995,7 @@ namespace ttpMiddleware.Controllers
                     //{
                     //    Console.WriteLine("hi");
                     //}
-                    var today = Convert.ToInt32(DateTime.Today.Year.ToString() + DateTime.Today.Month.ToString().PadLeft(2, '0'));
+                    //var today = Convert.ToInt32(DateTime.Today.Year.ToString() + DateTime.Today.Month.ToString().PadLeft(2, '0'));
                     var existing = await _appDBContext.AccountingLedgerTrialBalances.Where(x => x.MonthDisplay == _invoice.MonthDisplay
                                 && x.StudentClassId == _invoice.StudentClassId
                                 && x.OrgId == _invoice.OrgId
@@ -1006,10 +1006,29 @@ namespace ttpMiddleware.Controllers
                         _invoice.CreatedDate = DateTime.Now;
                         _appDBContext.AccountingLedgerTrialBalances.Add(_invoice);
                     }
-                    // only if any amount is not yet paid. TotalCredit == 0.
-                    // Balance ==0 but not paid means free student fee
-                    //fees can be updated only for current future months.
-                    else if (existing.TotalCredit == 0)// && (existing.Balance > 0 || _invoice.Month >= today))
+                    // TotalCredit = 0 any amount is not yet paid. .
+                    // BaseAmount >0 means fee amount is defined in classfee.
+                    // TotalCredit =0 means no payment is done
+                    // TotalDebit =0 means the student does not owe anything means free for that fee.
+                    //ledgerid studentclassid  MonthDisplay BaseAmount  TotalDebit TotalCredit Balance
+                    //128737          8197                0   0.00            0.00        0.00    0.00      <- discount - can update
+                    //128725          8197            1003    0.00            0.00        0.00    0.00      <- other than monthly fee - can update
+                    //128804          8197            1038    0.00            0.00        0.00    0.00      <- other than monthly fee - can update
+                    //128733          8197            202303  1300.00         0.00        0.00    0.00      <- free fee- cannot update
+                    //128729          8197            202307  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128728          8197            202308  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128727          8197            202309  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128726          8197            202310  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128776          8197            202311  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128738          8197            202400  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128735          8197            202401  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128734          8197            202402  1300.00         0.00        0.00    0.00      <- free fee-  cannot update
+                    //128732          8197            202304  1300.00         1300.00     0.00    1300.00   <- not free fee- can update
+                    //128731          8197            202305  1300.00         1300.00     0.00    1300.00   <- not free fee- can update
+                    //128730          8197            202306  1300.00         1300.00     0.00    1300.00   <- not free fee - can update
+                    //128736          8197            990     6000.00         6000.00     1000.00 5000.00   <- part payment - cannot update
+
+                    else if (existing.TotalCredit == 0)
                     {
                         existing.ClassId = _invoice.ClassId;
                         existing.SectionId = _invoice.SectionId;

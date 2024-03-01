@@ -229,16 +229,17 @@ namespace ttpMiddleware.Controllers
                 _context.StudentFeeReceipts.Add(_StudentFeeReceipt);
 
                 //student class becomes active after fee payment.
-                var studcls = await _context.StudentClasses.Where(x => x.StudentClassId == _StudentFeeReceipt.StudentClassId && x.Active == 0).FirstOrDefaultAsync();
+                var studcls = await _context.StudentClasses.Where(x => x.StudentClassId == _StudentFeeReceipt.StudentClassId 
+                && x.Admitted==false).FirstOrDefaultAsync();
                 if (studcls != null)
                 {
-                    studcls.Active = 1;
+                    studcls.Admitted = true;
                     studcls.AdmissionDate = DateTime.Now;
                     _context.Update(studcls);
                 }
                 //ends student class becomes active after fee payment
 
-                var _debit = false;
+                //var _debit = false;
                 var _generalLedgerAccountId = 0;
                 var _ledgerName = "";
                 var _ledgerAccountName = await _context.MasterItems.Where(x => x.MasterDataId == _StudentFeeReceipt.PaymentTypeId
@@ -246,7 +247,7 @@ namespace ttpMiddleware.Controllers
                                         && x.SubOrgId == _StudentFeeReceipt.SubOrgId).Select(s => s.MasterDataName).FirstOrDefaultAsync();
                 if (_ledgerAccountName.ToLower() == "ats")
                 {
-                    _debit = true;
+                    //_debit = true;
                     _generalLedgerAccountId = (int)_StudentFeeReceipt.AdjustedAccountId;
                     //_ledgerName = "salary account";
                 }
@@ -264,7 +265,7 @@ namespace ttpMiddleware.Controllers
                     var _generalAccount = await _context.GeneralLedgers.Where(x => x.GeneralLedgerName.ToLower() == _ledgerName
                     && x.OrgId == _StudentFeeReceipt.OrgId
                     && x.SubOrgId == _StudentFeeReceipt.SubOrgId).FirstOrDefaultAsync();
-                    _debit = true;
+                    //_debit = true;
                     _generalLedgerAccountId = (int)_generalAccount.GeneralLedgerId;
                 }
                 //var _studentLedgerId = await _context.GeneralLedgers.Where(x => x.StudentClassId == _StudentFeeReceipt.StudentClassId)

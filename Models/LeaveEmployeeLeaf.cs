@@ -45,6 +45,7 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public short BatchId { get; set; }
         public int? YearMonth { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
         [InverseProperty(nameof(EmpEmployee.LeaveEmployeeLeaves))]

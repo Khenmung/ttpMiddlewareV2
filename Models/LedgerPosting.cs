@@ -35,6 +35,8 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public bool Deleted { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(AccountingVoucherId))]
         [InverseProperty("LedgerPostings")]

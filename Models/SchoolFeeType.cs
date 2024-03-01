@@ -14,6 +14,7 @@ namespace ttpMiddleware.Models
         public SchoolFeeType()
         {
             StudentClasses = new HashSet<StudentClass>();
+            StudentFeeTypes = new HashSet<StudentFeeType>();
         }
 
         [Key]
@@ -41,8 +42,11 @@ namespace ttpMiddleware.Models
         public DateTime? UpdatedDate { get; set; }
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
 
         [InverseProperty(nameof(StudentClass.FeeType))]
         public virtual ICollection<StudentClass> StudentClasses { get; set; }
+        [InverseProperty(nameof(StudentFeeType.FeeType))]
+        public virtual ICollection<StudentFeeType> StudentFeeTypes { get; set; }
     }
 }

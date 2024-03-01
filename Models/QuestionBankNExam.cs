@@ -28,6 +28,8 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public int SubOrgId { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ExamId))]
         [InverseProperty("QuestionBankNExams")]

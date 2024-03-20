@@ -36,6 +36,7 @@ namespace ttpMiddleware.Models
         public DateTime? UpdatedDate { get; set; }
         [StringLength(450)]
         public string UpdatedBy { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("StudentActivities")]

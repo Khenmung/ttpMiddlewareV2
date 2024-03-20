@@ -70,7 +70,7 @@ namespace ttpMiddleware.Controllers
                 short _feetypeId = 0;
                 int _admittedStatusId = 0;
                 using var tran = _context.Database.BeginTransaction();
-
+                int StudentFeeTypeId = 0;
                 foreach (var x in jsonValues)
                 {
                     _student = x.ToObject<Student>();
@@ -104,7 +104,6 @@ namespace ttpMiddleware.Controllers
                             defaultFeeTypeId = _context.SchoolFeeTypes.Where(x => x.DefaultType == 1
                             && x.OrgId == _student.OrgId
                             && x.SubOrgId == _student.SubOrgId).Select(s => s.FeeTypeId).FirstOrDefault();
-
                             _feetypeId = defaultFeeTypeId;
                         }
                     }
@@ -205,7 +204,7 @@ namespace ttpMiddleware.Controllers
                                         CreatedDate = _student.CreatedDate,
                                         IsCurrent = true,
                                         Deleted = false,
-                                        FeeTypeId = defaultFeeTypeId,
+                                        FeeTypeId = _feetypeId,
                                         StudentClassId = _studentclass.StudentClassId,
                                         FromMonth = 0,
                                         ToMonth = 0,
@@ -216,6 +215,7 @@ namespace ttpMiddleware.Controllers
 
                                     _context.StudentFeeTypes.Add(studentfeetype);
                                     await _context.SaveChangesAsync();
+                                    StudentFeeTypeId = studentfeetype.StudentFeeTypeId;
                                     ////////////////////
 
                                 }
@@ -246,6 +246,7 @@ namespace ttpMiddleware.Controllers
                     OrgId = _student.OrgId,
                     SubOrgId = _student.SubOrgId,
                     Remarks = _student.Notes,
+                    StudentFeeTypeId = StudentFeeTypeId,
                     AdmissionDate = _student.AdmissionDate,
                     CreatedDate = DateTime.Now
                 };

@@ -12,7 +12,7 @@ using ttpMiddleware.CommonFunctions;
 
 namespace ttpMiddleware.Controllers
 {
-    [ODataRoutePrefix("[controller]")]
+    [ODataRoutePrefix("StudentFeeTypes")]
     [EnableQuery]
     public class StudentFeeTypesController : ProtectedController
     {

@@ -69,6 +69,7 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<MasterItem>("MasterItems");
             builder.EntitySet<AttendanceReport>("AttendanceReports");
             builder.EntitySet<LeavePolicy>("LeavePolicies");
+            builder.EntitySet<StudentActivity>("StudentActivities");
 
             builder.EntitySet<ReportConfigItem>("ReportConfigItems");
             builder.EntitySet<ReportOrgReportName>("ReportOrgReportNames");

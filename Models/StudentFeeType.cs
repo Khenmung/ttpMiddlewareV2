@@ -33,6 +33,8 @@ namespace ttpMiddleware.Models
         public short BatchId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+        [Column(TypeName = "decimal(8, 2)")]
+        public decimal Discount { get; set; }
 
         [ForeignKey(nameof(FeeTypeId))]
         [InverseProperty(nameof(SchoolFeeType.StudentFeeTypes))]

@@ -24,7 +24,7 @@ namespace ttpMiddleware.Models
         public int SectionId { get; set; }
         public int EvaluationExamMapId { get; set; }
         public int ClassEvaluationId { get; set; }
-        public string History { get; set; }
+        public string HistoryText { get; set; }
         [StringLength(1000)]
         public string AnswerText { get; set; }
         [Column(TypeName = "decimal(5, 2)")]
@@ -41,6 +41,8 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedDate { get; set; }
         public bool Deleted { get; set; }
+        public bool History { get; set; }
+
         [StringLength(450)]
         public string Updatedby { get; set; }
         public int SubOrgId { get; set; }

@@ -43,6 +43,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<ClassMaster> ClassMasters { get; set; }
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; }
         public virtual DbSet<ClassSubjectMarkComponent> ClassSubjectMarkComponents { get; set; }
+        public virtual DbSet<Config_table> Config_tables { get; set; }
         public virtual DbSet<CourseYearSemester> CourseYearSemesters { get; set; }
         public virtual DbSet<CustomFeature> CustomFeatures { get; set; }
         public virtual DbSet<CustomFeatureRolePermission> CustomFeatureRolePermissions { get; set; }
@@ -143,6 +144,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<TeacherSubject> TeacherSubjects { get; set; }
         public virtual DbSet<TotalAttendance> TotalAttendances { get; set; }
         public virtual DbSet<VariableConfiguration> VariableConfigurations { get; set; }
+        public virtual DbSet<audit_log> audit_logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -570,6 +572,15 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_ClassSubjectMarkComponents_MasterDataSubjectCompomentId");
             });
 
+            modelBuilder.Entity<Config_table>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.LastUpdatedColumn).IsUnicode(false);
+
+                entity.Property(e => e.TableName).IsUnicode(false);
+            });
+
             modelBuilder.Entity<CourseYearSemester>(entity =>
             {
                 entity.Property(e => e.CourseYearSemesterId).ValueGeneratedNever();
@@ -707,11 +718,15 @@ namespace ttpMiddleware.Models
             {
                 entity.Property(e => e.DataMode).IsUnicode(false);
 
+                entity.Property(e => e.History).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.TableName).IsUnicode(false);
 
-                entity.Property(e => e.Text).IsUnicode(false);
+                entity.Property(e => e.Text)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
             });
 
             modelBuilder.Entity<DynamicTable>(entity =>
@@ -2736,6 +2751,15 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.OrgId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_VariableConfiguration_Organization");
+            });
+
+            modelBuilder.Entity<audit_log>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.PackageName).IsUnicode(false);
+
+                entity.Property(e => e.TableName).IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

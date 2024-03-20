@@ -36,7 +36,7 @@ namespace ttpMiddleware.Models
         public short BatchId { get; set; }
         public bool Deleted { get; set; }
         public bool Synced { get; set; }
-        public bool History { get; set; }
         public Guid SyncId { get; set; }
+        public bool? History { get; set; }
     }
 }

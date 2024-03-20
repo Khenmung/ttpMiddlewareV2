@@ -93,30 +93,44 @@ namespace ttpMiddleware.Controllers
             //var tran = _context.Database.BeginTransaction();
             try
             {
-                if (entity.CurrentBatch == 1 && wasCurrentBatch != entity.CurrentBatch)
+                if (entity.CurrentBatch == 1)
                 {
                     var oldbatch = await _context.StudentClasses.Where(x =>
                     x.OrgId == entity.OrgId
-                    && (x.BatchId == oldCurrentBatchId || x.BatchId == entity.BatchId)).ToListAsync();
+                    && x.SubOrgId == entity.SubOrgId
+                    && x.BatchId == oldCurrentBatchId
+                    && x.IsCurrent == true).ToListAsync();
                     foreach (var x in oldbatch)
                     {
-                        if (x.BatchId == oldCurrentBatchId)
-                            x.IsCurrent = false;
-                        else
-                            x.IsCurrent = true;
-
+                        x.IsCurrent = false;
                         _context.Update(x);
                     }
 
-                   // var newBatch = await _context.StudentClasses.Where(x => x.BatchId == entity.BatchId
-                   //&& x.OrgId == entity.OrgId
-                   ////&& x.SubOrgId == entity.SubOrgId
-                   //).ToListAsync();
-                   // foreach (var y in newBatch)
-                   // {
-                   //     y.IsCurrent = true;
-                   //     _context.Update(y);
-                   // }
+                    var newBatch = await _context.StudentClasses.Where(x => x.BatchId == entity.BatchId
+                   && x.OrgId == entity.OrgId
+                   && x.SubOrgId == entity.SubOrgId
+                   && x.IsCurrent == false
+                   ).ToListAsync();
+                    foreach (var y in newBatch)
+                    {
+                        y.IsCurrent = true;
+                        _context.Update(y);
+                        var stud = await _context.Students.Where(x => x.StudentId == y.StudentId).FirstOrDefaultAsync();
+                        stud.BatchId = entity.BatchId;
+                        _context.Update(stud);
+                    }
+                }
+                else
+                {
+                    var newBatch = await _context.StudentClasses.Where(x => x.BatchId == entity.BatchId
+                  && x.OrgId == entity.OrgId
+                  && x.SubOrgId == entity.SubOrgId
+                  && x.IsCurrent == true).ToListAsync();
+                    foreach (var y in newBatch)
+                    {
+                        y.IsCurrent = false;
+                        _context.Update(y);
+                    }
                 }
                 await _context.SaveChangesAsync();
 

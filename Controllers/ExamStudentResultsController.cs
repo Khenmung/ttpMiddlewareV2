@@ -11,6 +11,7 @@ using ttpMiddleware.Models.DTOs.Requests;
 
 using ttpMiddleware.CommonFunctions;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ttpMiddleware.Controllers
 {
@@ -173,6 +174,10 @@ namespace ttpMiddleware.Controllers
                 }
                 foreach(var _markdetail in _ExamResultSubjectMark)
                 {
+                    //if(_markdetail.StudentClassId== 4744)
+                    //{
+                        
+                    //}
                     var resultmarks = await _context.ExamResultSubjectMarks.Where(x => x.ExamId == _markdetail.ExamId
                     && x.StudentClassId == _markdetail.StudentClassId 
                     && x.StudentClassSubjectId == _markdetail.StudentClassSubjectId

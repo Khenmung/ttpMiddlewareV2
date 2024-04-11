@@ -323,7 +323,7 @@ namespace ttpMiddleware.Controllers
                     }
 
 
-                    studcls.AdmissionDate = entity.AdmissionDate;
+                    //studcls.AdmissionDate = entity.AdmissionDate;
                     _context.StudentClasses.Update(studcls);
 
 

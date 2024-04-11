@@ -12,7 +12,7 @@ using ttpMiddleware.Models;
 
 namespace ttpMiddleware.Controllers
 {
-    [ODataRoutePrefix("Students")]
+    [ODataRoutePrefix("DataSyncs")]
     [EnableQuery]
     public class DataSyncsController : ProtectedController
     {

@@ -41,13 +41,12 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedDate { get; set; }
         public bool Deleted { get; set; }
-        public bool History { get; set; }
-
         [StringLength(450)]
         public string Updatedby { get; set; }
         public int SubOrgId { get; set; }
         public int SemesterId { get; set; }
         public Guid SyncId { get; set; }
+        public bool History { get; set; }
 
         [ForeignKey(nameof(ClassId))]
         [InverseProperty(nameof(ClassMaster.StudentEvaluationResults))]

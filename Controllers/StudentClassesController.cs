@@ -96,123 +96,113 @@ namespace ttpMiddleware.Controllers
             var tran = _context.Database.BeginTransaction();
             try
             {
-                //if (!String.IsNullOrEmpty(entity.AdmissionNo))
-                //{
-                //    var _admissionNo = await _context.StudentClasses.Where(x => x.StudentClassId != entity.StudentClassId
-                //    && x.OrgId == entity.OrgId
-                //    && x.SubOrgId == entity.SubOrgId
-                //    && x.AdmissionNo == entity.AdmissionNo).Select(s => s.StudentClassId).FirstOrDefaultAsync();
-
-                //    if (_admissionNo > 0)
-                //        return BadRequest("Admission no. already exist.");
-
-                //}
-                if (!String.IsNullOrEmpty(entity.RollNo))
+                int numberOfChanges = 0;
+                string changedColumn="";
+                foreach (var property in studentClass.GetChangedPropertyNames())
                 {
-                    var _RollNO = await _context.StudentClasses.Where(x => x.StudentClassId != entity.StudentClassId
-                    && x.OrgId == entity.OrgId
-                    && x.SubOrgId == entity.SubOrgId
-                    && x.ClassId == entity.ClassId
-                    && x.SectionId == entity.SectionId
-                    && x.SemesterId == entity.SemesterId
-                    && x.BatchId == entity.BatchId
-                    && x.RollNo == entity.RollNo).Select(s => s.StudentClassId).FirstOrDefaultAsync();
-                    if (_RollNO > 0)
-                        return BadRequest(entity.RollNo + "-Roll no. already exist.");
+                    numberOfChanges++;
+                    changedColumn+= property;
                 }
-                var _student = await _context.Students.Where(x => x.StudentId != entity.StudentId
-                    && x.OrgId == entity.OrgId
-                    && x.SubOrgId == entity.SubOrgId
-                    ).FirstOrDefaultAsync();
-                if (_student != null)
+                if (numberOfChanges == 2 && changedColumn=="RollNoUpdatedDate")
                 {
-                    _student.ClassId = entity.ClassId;
-                    _context.Update(_student);
+
                 }
-                if (existingSemesterId != entity.SemesterId || existingSectionId != entity.SectionId || existingActive != entity.Active)
+                else
                 {
-                    var studentClassSubject = await _context.StudentClassSubjects.Where(x => x.StudentClassId == entity.StudentClassId
-                        && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                    var _student = await _context.Students.Where(x => x.StudentId != entity.StudentId
+                        && x.OrgId == entity.OrgId
+                        && x.SubOrgId == entity.SubOrgId
+                        ).FirstOrDefaultAsync();
+                    if (_student != null)
+                    {
+                        _student.ClassId = entity.ClassId;
+                        _context.Update(_student);
+                    }
+                    if (existingSemesterId != entity.SemesterId || existingSectionId != entity.SectionId || existingActive != entity.Active)
+                    {
+                        var studentClassSubject = await _context.StudentClassSubjects.Where(x => x.StudentClassId == entity.StudentClassId
+                            && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
 
-                    foreach (var item in studentClassSubject)
-                    {
-                        item.Active = item.Active == 1 ? entity.Active : item.Active;
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
+                        foreach (var item in studentClassSubject)
+                        {
+                            item.Active = item.Active == 1 ? entity.Active : item.Active;
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
 
-                    var exammarkentity = await _context.ExamResultSubjectMarks.Where(x => x.StudentClassId == entity.StudentClassId
-                                            && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in exammarkentity)
-                    {
-                        item.Active = !item.Active ? false : item.Active;
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var StudentEvaluationResult = await _context.StudentEvaluationResults.Where(x => x.StudentClassId == entity.StudentClassId
-                                           && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in StudentEvaluationResult)
-                    {
-                        item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var studentFeeReceipt = await _context.StudentFeeReceipts.Where(x => x.StudentClassId == entity.StudentClassId
-                                           && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in studentFeeReceipt)
-                    {
-                        item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
-                        //item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var sportResult = await _context.SportResults.Where(x => x.StudentClassId == entity.StudentClassId
-                                           && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in sportResult)
-                    {
-                        item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
-                        //item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var examStudentResult = await _context.ExamStudentResults.Where(x => x.StudentClassId == entity.StudentClassId
-                                          && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in examStudentResult)
-                    {
-                        item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var examStudentSubjectResult = await _context.ExamStudentSubjectResults.Where(x => x.StudentClassId == entity.StudentClassId
-                                          && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in examStudentSubjectResult)
-                    {
-                        item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var attendance = await _context.Attendances.Where(x => x.StudentClassId == entity.StudentClassId
-                                          && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in attendance)
-                    {
-                        //item.ac = (byte)(item.Active == 0 ? 0 : item.Active);
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
-                    }
-                    var accountledgers = await _context.AccountingLedgerTrialBalances.Where(x => x.StudentClassId == entity.StudentClassId
-                                          && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
-                    foreach (var item in accountledgers)
-                    {
-                        item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
-                        item.SemesterId = (int)entity.SemesterId;
-                        item.SectionId = (int)entity.SectionId;
-                        _context.Update(item);
+                        var exammarkentity = await _context.ExamResultSubjectMarks.Where(x => x.StudentClassId == entity.StudentClassId
+                                                && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in exammarkentity)
+                        {
+                            item.Active = !item.Active ? false : item.Active;
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var StudentEvaluationResult = await _context.StudentEvaluationResults.Where(x => x.StudentClassId == entity.StudentClassId
+                                               && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in StudentEvaluationResult)
+                        {
+                            item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var studentFeeReceipt = await _context.StudentFeeReceipts.Where(x => x.StudentClassId == entity.StudentClassId
+                                               && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in studentFeeReceipt)
+                        {
+                            item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
+                            //item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var sportResult = await _context.SportResults.Where(x => x.StudentClassId == entity.StudentClassId
+                                               && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in sportResult)
+                        {
+                            item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
+                            //item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var examStudentResult = await _context.ExamStudentResults.Where(x => x.StudentClassId == entity.StudentClassId
+                                              && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in examStudentResult)
+                        {
+                            item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var examStudentSubjectResult = await _context.ExamStudentSubjectResults.Where(x => x.StudentClassId == entity.StudentClassId
+                                              && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in examStudentSubjectResult)
+                        {
+                            item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var attendance = await _context.Attendances.Where(x => x.StudentClassId == entity.StudentClassId
+                                              && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in attendance)
+                        {
+                            //item.ac = (byte)(item.Active == 0 ? 0 : item.Active);
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
+                        var accountledgers = await _context.AccountingLedgerTrialBalances.Where(x => x.StudentClassId == entity.StudentClassId
+                                              && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).ToListAsync();
+                        foreach (var item in accountledgers)
+                        {
+                            item.Active = (byte)(item.Active == 0 ? 0 : item.Active);
+                            item.SemesterId = (int)entity.SemesterId;
+                            item.SectionId = (int)entity.SectionId;
+                            _context.Update(item);
+                        }
                     }
                 }
                 //var studentaccount = await _context.GeneralLedgers.Where(x => x.StudentClassId == entity.StudentClassId).Select(s => s.GeneralLedgerId).ToListAsync();
@@ -303,7 +293,7 @@ namespace ttpMiddleware.Controllers
 
                 var defaultFeeTypeId = 0;
 
-                if (studentClass.FeeTypeId !=null && studentClass.FeeTypeId > 0)
+                if (studentClass.FeeTypeId != null && studentClass.FeeTypeId > 0)
                     defaultFeeTypeId = (short)studentClass.FeeTypeId;
                 else
                 {
@@ -312,22 +302,23 @@ namespace ttpMiddleware.Controllers
                 }
 
 
-                var studentfeetype = new StudentFeeType()
-                {
-                    Active = true,
-                    BatchId = studentClass.BatchId,
-                    CreatedBy = studentClass.CreatedBy,
-                    CreatedDate = studentClass.CreatedDate,
-                    IsCurrent = true,
-                    Deleted = false,
-                    FeeTypeId = (short)defaultFeeTypeId,
-                    StudentClassId = studentClass.StudentClassId,
-                    FromMonth = 0,
-                    ToMonth = 0,
-                    OrgId = studentClass.OrgId,
-                    SubOrgId = studentClass.SubOrgId,
-                    StudentFeeTypeId = 0
-                };
+                var studentfeetype = new StudentFeeType();
+
+
+                studentfeetype.Active = true;
+                studentfeetype.BatchId = studentClass.BatchId;
+                studentfeetype.CreatedBy = studentClass.CreatedBy;
+                studentfeetype.CreatedDate = studentClass.CreatedDate;
+                studentfeetype.IsCurrent = true;
+                studentfeetype.Deleted = false;
+                studentfeetype.FeeTypeId = (short)defaultFeeTypeId;
+                studentfeetype.StudentClassId = studentClass.StudentClassId;
+                studentfeetype.FromMonth = 0;
+                studentfeetype.ToMonth = 0;
+                studentfeetype.OrgId = studentClass.OrgId;
+                studentfeetype.SubOrgId = studentClass.SubOrgId;
+                studentfeetype.StudentFeeTypeId = 0;
+
 
                 _context.StudentFeeTypes.Add(studentfeetype);
 
@@ -340,10 +331,11 @@ namespace ttpMiddleware.Controllers
                 }
 
                 //checking if the batchid is the current batchid then only update students
-                var _IsCurrentBatchId = await _context.Batches.Where(x => x.CurrentBatch == 1
-                && x.BatchId == studentClass.BatchId
-                && x.OrgId == studentClass.OrgId).FirstOrDefaultAsync();
-                if (_IsCurrentBatchId != null)
+                //var _IsCurrentBatchId = await _context.Batches.Where(x => x.CurrentBatch == 1
+                //&& x.BatchId == studentClass.BatchId
+                //&& x.OrgId == studentClass.OrgId).FirstOrDefaultAsync();
+                //if (_IsCurrentBatchId != null)
+                if (studentClass.IsCurrent == true)
                 {
                     var _student = await _context.Students.Where(x => x.StudentId == studentClass.StudentId).FirstOrDefaultAsync();
                     _student.BatchId = studentClass.BatchId;
@@ -351,6 +343,7 @@ namespace ttpMiddleware.Controllers
                     _context.Students.Update(_student);
                 }
                 await _context.SaveChangesAsync();
+                //studentClass.StudentFeeTypes.Add(studentfeetype);
             }
             catch (Exception ex)
             {

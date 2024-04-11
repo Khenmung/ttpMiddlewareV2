@@ -43,6 +43,7 @@ namespace ttpMiddleware.Models
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
         public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [InverseProperty(nameof(StudentClass.FeeType))]
         public virtual ICollection<StudentClass> StudentClasses { get; set; }

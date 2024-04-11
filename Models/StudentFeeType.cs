@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("StudentFeeType")]
+    [Index(nameof(StudentClassId), nameof(FeeTypeId), nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20240314-121322")]
     public partial class StudentFeeType
     {
         [Key]
@@ -30,11 +31,11 @@ namespace ttpMiddleware.Models
         public string CreatedBy { get; set; }
         [StringLength(450)]
         public string UpdatedBy { get; set; }
-        public short BatchId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
         [Column(TypeName = "decimal(8, 2)")]
         public decimal Discount { get; set; }
+        public short BatchId { get; set; }
 
         [ForeignKey(nameof(FeeTypeId))]
         [InverseProperty(nameof(SchoolFeeType.StudentFeeTypes))]

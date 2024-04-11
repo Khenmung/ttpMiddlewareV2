@@ -40,6 +40,7 @@ namespace ttpMiddleware.Models
         public bool? Active { get; set; }
         public int SubOrgId { get; set; }
         public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
         [InverseProperty(nameof(EmpEmployee.EmployeeMonthlySalaries))]

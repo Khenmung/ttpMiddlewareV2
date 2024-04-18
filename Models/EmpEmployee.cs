@@ -134,7 +134,6 @@ namespace ttpMiddleware.Models
         [StringLength(30)]
         public string Spouse { get; set; }
         public bool History { get; set; }
-        public Guid SyncId { get; set; }
 
         [InverseProperty("AttendanceReportNavigation")]
         public virtual AttendanceReport AttendanceReport { get; set; }

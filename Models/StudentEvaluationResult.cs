@@ -24,7 +24,7 @@ namespace ttpMiddleware.Models
         public int SectionId { get; set; }
         public int EvaluationExamMapId { get; set; }
         public int ClassEvaluationId { get; set; }
-        public string HistoryText { get; set; }
+        public string History { get; set; }
         [StringLength(1000)]
         public string AnswerText { get; set; }
         [Column(TypeName = "decimal(5, 2)")]
@@ -46,7 +46,6 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public int SemesterId { get; set; }
         public Guid SyncId { get; set; }
-        public bool History { get; set; }
 
         [ForeignKey(nameof(ClassId))]
         [InverseProperty(nameof(ClassMaster.StudentEvaluationResults))]

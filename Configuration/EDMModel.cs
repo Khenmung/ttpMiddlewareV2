@@ -133,6 +133,7 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<LedgerPosting>("LedgerPostings");
             builder.EntitySet<StudentFeeType>("StudentFeeTypes");
             builder.EntitySet<DataSync>("DataSyncs");
+            builder.EntitySet<ManualCertificate>("ManualCertificates");
 
             return builder.GetEdmModel();
         }

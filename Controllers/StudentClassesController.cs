@@ -96,20 +96,21 @@ namespace ttpMiddleware.Controllers
             var tran = _context.Database.BeginTransaction();
             try
             {
-                int numberOfChanges = 0;
-                string changedColumn="";
-                foreach (var property in studentClass.GetChangedPropertyNames())
-                {
-                    numberOfChanges++;
-                    changedColumn+= property;
-                }
-                if (numberOfChanges == 2 && changedColumn=="RollNoUpdatedDate")
-                {
-
-                }
-                else
-                {
-                    var _student = await _context.Students.Where(x => x.StudentId != entity.StudentId
+                //int numberOfChanges = 0;
+                //string changedColumn= "RollNoUpdatedDateSectionIdSemesterIdAdmitted";
+                //foreach (var property in studentClass.GetChangedPropertyNames())
+                //{
+                //    numberOfChanges++;
+                //    if (!changedColumn.Contains(property))
+                //        numberOfChanges = 0;
+                //}
+                //if (numberOfChanges == 5)
+                //{
+                //    //if update from assignclass page.
+                //}
+                //else
+                //{
+                    var _student = await _context.Students.Where(x => x.StudentId == entity.StudentId
                         && x.OrgId == entity.OrgId
                         && x.SubOrgId == entity.SubOrgId
                         ).FirstOrDefaultAsync();
@@ -118,6 +119,7 @@ namespace ttpMiddleware.Controllers
                         _student.ClassId = entity.ClassId;
                         _context.Update(_student);
                     }
+
                     if (existingSemesterId != entity.SemesterId || existingSectionId != entity.SectionId || existingActive != entity.Active)
                     {
                         var studentClassSubject = await _context.StudentClassSubjects.Where(x => x.StudentClassId == entity.StudentClassId
@@ -204,7 +206,7 @@ namespace ttpMiddleware.Controllers
                             _context.Update(item);
                         }
                     }
-                }
+                //}
                 //var studentaccount = await _context.GeneralLedgers.Where(x => x.StudentClassId == entity.StudentClassId).Select(s => s.GeneralLedgerId).ToListAsync();
                 //if (studentaccount.Count == 0)
                 //{

@@ -40,7 +40,6 @@ namespace ttpMiddleware.Models
         [StringLength(256)]
         public string Description { get; set; }
         public bool History { get; set; }
-        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ComponentTypeId))]
         [InverseProperty(nameof(MasterItem.EmpComponents))]

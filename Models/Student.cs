@@ -138,10 +138,14 @@ namespace ttpMiddleware.Models
         public int ClassId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
-        [StringLength(10)]
-        public string BoardRollNo { get; set; }
         [StringLength(11)]
         public string PEN { get; set; }
+        [StringLength(10)]
+        public string BoardRollNo { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? DeactivatedDate { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? ReActivatedDate { get; set; }
 
         [ForeignKey(nameof(BloodgroupId))]
         [InverseProperty(nameof(MasterItem.StudentBloodgroups))]

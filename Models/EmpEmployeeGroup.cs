@@ -36,7 +36,6 @@ namespace ttpMiddleware.Models
         public short? ApprovedBy { get; set; }
         public byte Active { get; set; }
         public bool History { get; set; }
-        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.EmpEmployeeGroupOrgs))]

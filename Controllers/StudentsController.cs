@@ -195,7 +195,7 @@ namespace ttpMiddleware.Controllers
 
                                     await _context.SaveChangesAsync();
 
-                                    
+
                                     var studentfeetype = new StudentFeeType()
                                     {
                                         Active = true,
@@ -278,11 +278,24 @@ namespace ttpMiddleware.Controllers
             {
                 return NotFound();
             }
+            var existingstudent = _context.Students.Where(x => x.FirstName == entity.FirstName
+                            && x.LastName == entity.LastName
+                            && x.FatherName == entity.FatherName
+                            && x.OrgId == entity.OrgId
+                            && x.SubOrgId == entity.SubOrgId
+                            ).Any();
+            if (!existingstudent)
+                return BadRequest("Same student name and father's name already exists. firstname: " + entity.FirstName + ", fathername: " + entity.FatherName);
+
             student.Patch(entity);
             using var tran = _context.Database.BeginTransaction();
 
             try
             {
+                var isCurrentBatch = _context.Batches.Where(x => x.CurrentBatch == 1 && x.BatchId == entity.BatchId
+                && x.OrgId == entity.OrgId
+                && x.Active == 1).Any();
+
                 var _lastName = entity.LastName == null || entity.LastName.Length == 0 ? "" : " " + entity.LastName;
                 short _feetypeId = 0;
                 if (entity.FeeTypeId > 0)
@@ -308,14 +321,14 @@ namespace ttpMiddleware.Controllers
                                                      ).Select(s => s.MasterDataId).FirstOrDefaultAsync();
 
                 var _admissionStatusId = _masterAdmittedStatusId == entity.AdmissionStatusId ? true : false;
-                var _active = 0;// entity.Active == 0 ? 0 : _admissionStatusId;
+                //var _active = 0;// entity.Active == 0 ? 0 : _admissionStatusId;
                 if (studcls != null)
                 {
                     studcls.Active = (byte)entity.Active;
 
                     //cant say student is admitted even though he is active
                     if (entity.Active == 1)
-                        studcls.IsCurrent = true;
+                        studcls.IsCurrent = isCurrentBatch;
                     else
                     {
                         //if inactive, admitted should be false;
@@ -342,8 +355,8 @@ namespace ttpMiddleware.Controllers
                 else
                 {
 
-                    //new student
-                    if (entity.ClassAdmissionSought > 0)// && _admissionStatusId == entity.AdmissionStatusId)
+                    //new class
+                    if (entity.ClassAdmissionSought > 0 && entity.Active ==1)// && _admissionStatusId == entity.AdmissionStatusId)
                     {
                         var _studentcount = _context.StudentClasses.Where(x =>
                         x.OrgId == entity.OrgId
@@ -363,10 +376,11 @@ namespace ttpMiddleware.Controllers
                             ClassId = (int)entity.ClassAdmissionSought,
                             SectionId = entity.SectionId,
                             SemesterId = entity.SemesterId,
-                            Active = (byte)_active,//(byte)_admissionStatusId,
+                            Active = entity.Active,
                             Admitted = _admissionStatusId,
                             FeeTypeId = _feetypeId,
                             BatchId = (short)entity.BatchId,
+                            IsCurrent = isCurrentBatch,
                             OrgId = entity.OrgId,
                             SubOrgId = entity.SubOrgId,
                             AdmissionDate = entity.AdmissionDate,
@@ -399,8 +413,6 @@ namespace ttpMiddleware.Controllers
 
                     }
                 }
-                if (entity.Active == 0)
-                    entity.BatchId = 0;
 
 
                 await _context.SaveChangesAsync();
@@ -416,7 +428,7 @@ namespace ttpMiddleware.Controllers
                 tran.Rollback();
                 return BadRequest(ex);
             }
-            return Updated(entity);
+            return Ok(entity);
         }
         /// <summary>
         /// to update all properties

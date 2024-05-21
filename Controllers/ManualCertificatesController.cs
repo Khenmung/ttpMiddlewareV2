@@ -49,7 +49,7 @@ namespace ttpMiddleware.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutManualCertificate(int id, ManualCertificate manualCertificate)
         {
-            if (id != manualCertificate.ManualCertificateId)
+            if (id != manualCertificate.CertificateDataId)
             {
                 return BadRequest();
             }
@@ -74,7 +74,7 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-        public async Task<IActionResult> Patch([FromODataUri] short key, [FromBody] Delta<ManualCertificate> manualCertificate)
+        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<ManualCertificate> manualCertificate)
         {
             if (!ModelState.IsValid)
             {
@@ -144,7 +144,7 @@ namespace ttpMiddleware.Controllers
 
         private bool ManualCertificateExists(int id)
         {
-            return _context.ManualCertificates.Any(e => e.ManualCertificateId == id);
+            return _context.ManualCertificates.Any(e => e.CertificateDataId == id);
         }
     }
 }

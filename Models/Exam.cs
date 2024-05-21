@@ -58,6 +58,11 @@ namespace ttpMiddleware.Models
         public short Sequence { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+        public int ExamNameGroupId { get; set; }
+        public int ExamNameSubGroupId { get; set; }
+        [Required]
+        [StringLength(30)]
+        public string DisplayName { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("Exams")]

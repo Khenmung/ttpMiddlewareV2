@@ -12,20 +12,13 @@ namespace ttpMiddleware.Models
     public partial class ManualCertificate
     {
         [Key]
-        public int ManualCertificateId { get; set; }
-        [Required]
-        [StringLength(50)]
-        public string FirstName { get; set; }
-        [StringLength(30)]
-        public string LastName { get; set; }
+        public int CertificateDataId { get; set; }
+        public int StudentId { get; set; }
+        public int StudentClassId { get; set; }
         [StringLength(30)]
         public string Batch { get; set; }
         [StringLength(20)]
         public string PassingYear { get; set; }
-        [StringLength(50)]
-        public string FatherName { get; set; }
-        [StringLength(50)]
-        public string MotherName { get; set; }
         [StringLength(30)]
         public string ExamName { get; set; }
         [StringLength(10)]
@@ -36,10 +29,6 @@ namespace ttpMiddleware.Models
         public string RollNo { get; set; }
         [StringLength(15)]
         public string Percentage { get; set; }
-        [StringLength(30)]
-        public string Gender { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? BOD { get; set; }
         public short? OrgId { get; set; }
         public int? SubOrgId { get; set; }
         public bool? Deleted { get; set; }
@@ -54,5 +43,6 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public Guid? SyncId { get; set; }
+        public bool History { get; set; }
     }
 }

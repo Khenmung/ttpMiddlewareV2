@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("AccountingLedgerTrialBalance")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(TotalDebit), nameof(Balance), nameof(StudentClassId), nameof(MonthDisplay), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20231005-194615")]
+    [Index(nameof(MonthDisplay), nameof(StudentClassId), nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(BatchId), nameof(TotalDebit), nameof(Balance), nameof(Deleted), Name = "NonClusteredIndex-20231005-194615")]
     public partial class AccountingLedgerTrialBalance
     {
         public AccountingLedgerTrialBalance()
@@ -49,6 +49,7 @@ namespace ttpMiddleware.Models
         public int SectionId { get; set; }
         public int Month { get; set; }
         public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("AccountingLedgerTrialBalances")]

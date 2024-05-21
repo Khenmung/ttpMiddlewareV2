@@ -43,7 +43,6 @@ namespace ttpMiddleware.Models
         public virtual DbSet<ClassMaster> ClassMasters { get; set; }
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; }
         public virtual DbSet<ClassSubjectMarkComponent> ClassSubjectMarkComponents { get; set; }
-        public virtual DbSet<Config_table> Config_tables { get; set; }
         public virtual DbSet<CourseYearSemester> CourseYearSemesters { get; set; }
         public virtual DbSet<CustomFeature> CustomFeatures { get; set; }
         public virtual DbSet<CustomFeatureRolePermission> CustomFeatureRolePermissions { get; set; }
@@ -145,7 +144,6 @@ namespace ttpMiddleware.Models
         public virtual DbSet<TeacherSubject> TeacherSubjects { get; set; }
         public virtual DbSet<TotalAttendance> TotalAttendances { get; set; }
         public virtual DbSet<VariableConfiguration> VariableConfigurations { get; set; }
-        public virtual DbSet<audit_log> audit_logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -158,7 +156,6 @@ namespace ttpMiddleware.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<AccountNature>(entity =>
@@ -174,6 +171,8 @@ namespace ttpMiddleware.Models
             {
                 entity.HasKey(e => e.LedgerId)
                     .HasName("PK_StudentTeachLedger");
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Batch)
                     .WithMany(p => p.AccountingLedgerTrialBalances)
@@ -216,6 +215,8 @@ namespace ttpMiddleware.Models
                 entity.Property(e => e.Reference).IsUnicode(false);
 
                 entity.Property(e => e.ShortText).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.ClassFee)
                     .WithMany(p => p.AccountingVouchers)
@@ -290,6 +291,8 @@ namespace ttpMiddleware.Models
                     .HasName("PK_ApplicationRolePerm");
 
                 entity.Property(e => e.PlanId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.PlanFeature)
                     .WithMany(p => p.ApplicationFeatureRolesPerms)
@@ -574,15 +577,6 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_ClassSubjectMarkComponents_MasterDataSubjectCompomentId");
             });
 
-            modelBuilder.Entity<Config_table>(entity =>
-            {
-                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.LastUpdatedColumn).IsUnicode(false);
-
-                entity.Property(e => e.TableName).IsUnicode(false);
-            });
-
             modelBuilder.Entity<CourseYearSemester>(entity =>
             {
                 entity.Property(e => e.CourseYearSemesterId).ValueGeneratedNever();
@@ -754,6 +748,8 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.SalaryComponent).IsUnicode(false);
 
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.ComponentType)
                     .WithMany(p => p.EmpComponents)
                     .HasForeignKey(d => d.ComponentTypeId)
@@ -849,6 +845,8 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.SubOrgId).HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.WhatsappNo).IsUnicode(false);
 
                 entity.Property(e => e.WorkAccountId).HasDefaultValueSql("((0))");
@@ -857,6 +855,8 @@ namespace ttpMiddleware.Models
             modelBuilder.Entity<EmpEmployeeGradeSalHistory>(entity =>
             {
                 entity.Property(e => e.Remarks).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.EmpEmployeeGradeSalHistoryDepartments)
@@ -907,6 +907,8 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.Remarks).IsUnicode(false);
 
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.Org)
                     .WithMany(p => p.EmpEmployeeGroupOrgs)
                     .HasForeignKey(d => d.OrgId)
@@ -949,6 +951,8 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<EmpEmployeeSkill>(entity =>
             {
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.EmpEmployeeSkills)
                     .HasForeignKey(d => d.EmployeeId)
@@ -966,6 +970,8 @@ namespace ttpMiddleware.Models
             {
                 entity.HasKey(e => e.ManagerGroupMappingId)
                     .HasName("PK_ManagerTeacherGroupMapping");
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
             });
 
             modelBuilder.Entity<EmpWorkHistory>(entity =>
@@ -975,6 +981,8 @@ namespace ttpMiddleware.Models
                 entity.Property(e => e.OrganizationName).IsUnicode(false);
 
                 entity.Property(e => e.Responsibility).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.EmpWorkHistories)
@@ -1027,6 +1035,8 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.CourseName).IsUnicode(false);
 
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.EmployeeEducationHistories)
                     .HasForeignKey(d => d.EmployeeId)
@@ -1043,6 +1053,8 @@ namespace ttpMiddleware.Models
             modelBuilder.Entity<EmployeeFamily>(entity =>
             {
                 entity.Property(e => e.FullName).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.EmployeeFamilies)
@@ -1072,6 +1084,8 @@ namespace ttpMiddleware.Models
             modelBuilder.Entity<EmployeeMonthlySalary>(entity =>
             {
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.EmployeeMonthlySalaries)
@@ -1158,6 +1172,10 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<Exam>(entity =>
             {
+                entity.Property(e => e.DisplayName)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
                 entity.Property(e => e.MarkFormula).IsUnicode(false);
 
                 entity.Property(e => e.ReleaseResult).HasDefaultValueSql("((0))");
@@ -1552,6 +1570,8 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.Remarks).IsUnicode(false);
 
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.LeaveEmployeeLeaves)
                     .HasForeignKey(d => d.EmployeeId)
@@ -1640,9 +1660,9 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.Issued).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.LastName).HasDefaultValueSql("('')");
-
                 entity.Property(e => e.PassingYear).HasDefaultValueSql("('')");
+
+                entity.Property(e => e.StudentClassId).HasDefaultValueSql("('')");
 
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
             });
@@ -2007,6 +2027,8 @@ namespace ttpMiddleware.Models
                 entity.Property(e => e.FeeTypeName).IsUnicode(false);
 
                 entity.Property(e => e.Formula).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
             });
 
             modelBuilder.Entity<SchoolTimeTable>(entity =>
@@ -2142,6 +2164,8 @@ namespace ttpMiddleware.Models
             modelBuilder.Entity<StudTeacherClassMapping>(entity =>
             {
                 entity.Property(e => e.HelperId).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Batch)
                     .WithMany(p => p.StudTeacherClassMappings)
@@ -2366,6 +2390,8 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<StudentCertificate>(entity =>
             {
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.Batch)
                     .WithMany(p => p.StudentCertificates)
                     .HasForeignKey(d => d.BatchId)
@@ -2477,7 +2503,7 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<StudentEvaluationResult>(entity =>
             {
-                entity.Property(e => e.History).IsUnicode(false);
+                entity.Property(e => e.HistoryText).IsUnicode(false);
 
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
@@ -2545,6 +2571,10 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<StudentFeeType>(entity =>
             {
+                entity.Property(e => e.Remarks)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.FeeType)
@@ -2767,6 +2797,8 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<VariableConfiguration>(entity =>
             {
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.VariableDescription).IsUnicode(false);
 
                 entity.Property(e => e.VariableFormula).IsUnicode(false);
@@ -2778,15 +2810,6 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.OrgId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_VariableConfiguration_Organization");
-            });
-
-            modelBuilder.Entity<audit_log>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.PackageName).IsUnicode(false);
-
-                entity.Property(e => e.TableName).IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

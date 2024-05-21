@@ -98,7 +98,10 @@ namespace ttpMiddleware.Controllers
 
                 if (examParent.Count > 0)
                 {
-                    var _exams = await _context.Exams.Where(x => x.ExamId == entity.MasterDataId).ToListAsync();
+                    var _exams = await _context.Exams.Where(x => x.ExamNameId == entity.MasterDataId
+                    && x.OrgId == entity.OrgId
+                    && x.SubOrgId == entity.SubOrgId).ToListAsync();
+
                     foreach (var item in _exams)
                     {
                         item.Deleted = entity.Deleted;

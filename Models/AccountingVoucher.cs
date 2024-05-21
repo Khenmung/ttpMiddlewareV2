@@ -55,6 +55,7 @@ namespace ttpMiddleware.Models
         public int ActivityTypeId { get; set; }
         public int LedgerPostingId { get; set; }
         public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(ClassFeeId))]
         [InverseProperty("AccountingVouchers")]

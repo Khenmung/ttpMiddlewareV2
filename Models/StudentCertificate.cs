@@ -31,6 +31,7 @@ namespace ttpMiddleware.Models
         public bool Deleted { get; set; }
         public int SubOrgId { get; set; }
         public bool History { get; set; }
+        public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("StudentCertificates")]

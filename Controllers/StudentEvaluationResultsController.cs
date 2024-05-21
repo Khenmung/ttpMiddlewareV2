@@ -163,7 +163,7 @@ namespace ttpMiddleware.Controllers
                         Active = _result.Active,
                         ClassEvaluationId = _result.ClassEvaluationId,
                         AnswerText = _result.AnswerText,
-                        History = _result.History,
+                        HistoryText = _result.HistoryText,
                         EvaluationExamMapId = _result.EvaluationExamMapId,
                         OrgId = _result.OrgId,
                         SubOrgId = _result.SubOrgId,

@@ -39,5 +39,6 @@ namespace ttpMiddleware.Models
         public int SubOrgId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+        public int CategoryId { get; set; }
     }
 }

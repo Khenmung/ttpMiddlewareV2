@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ttpMiddleware.CommonFunctions
 {
-    //[Authorize]
+    [Authorize]
     public class ProtectedController: ODataController
     {
         

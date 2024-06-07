@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using ttpMiddleware.Data.Entities;
 using Microsoft.Extensions.Configuration;
 using ttpMiddleware.CommonFunctions;
+using System.Collections.Generic;
 namespace ttpMiddleware.Controllers
 {
     /// <summary>
@@ -188,7 +189,8 @@ namespace ttpMiddleware.Controllers
                                         SubOrgId = _student.SubOrgId,
                                         Remarks = _student.Notes,
                                         AdmissionDate = _student.AdmissionDate == null ? DateTime.Now : _student.AdmissionDate,
-                                        CreatedDate = DateTime.Now
+                                        CreatedDate = DateTime.Now,
+                                        UpdatedDate= DateTime.Now
                                     };
 
                                     _context.StudentClasses.Add(_studentclass);
@@ -202,6 +204,7 @@ namespace ttpMiddleware.Controllers
                                         BatchId = (short)_student.BatchId,
                                         CreatedBy = _student.CreatedBy,
                                         CreatedDate = _student.CreatedDate,
+                                        UpdatedDate=DateTime.Now,
                                         IsCurrent = true,
                                         Deleted = false,
                                         FeeTypeId = _feetypeId,
@@ -214,6 +217,37 @@ namespace ttpMiddleware.Controllers
                                     };
 
                                     _context.StudentFeeTypes.Add(studentfeetype);
+                                    var tables = new List<string>();
+                                    tables.Add("Students");
+                                    tables.Add("StudentClasses");
+                                    tables.Add("StudentFeeTypes");
+                                    foreach (var item in tables)
+                                    {
+                                        var existing = _context.Config_tables.Where(x => x.TableName == item).FirstOrDefault();
+                                        if (existing != null)
+                                        {
+                                            existing.LastUpdatedValue = DateTime.Now;
+                                            _context.Config_tables.Update(existing);
+                                        }
+                                        else
+                                        {
+                                            var _configTable = new Config_table()
+                                            {
+                                                TableName = item,
+                                                Active = true,
+                                                CreatedDate = DateTime.Now,
+                                                Deleted = false,
+                                                LastUpdatedValue = DateTime.Now,
+                                                OrgId = _student.OrgId,
+                                                SubOrgId = _student.SubOrgId,
+                                                LastUpdatedColumn = ""
+
+                                            };
+                                            _context.Config_tables.Add(_configTable);
+                                        }
+                                    }
+                                    
+
                                     await _context.SaveChangesAsync();
                                     StudentFeeTypeId = studentfeetype.StudentFeeTypeId;
                                     ////////////////////
@@ -351,12 +385,36 @@ namespace ttpMiddleware.Controllers
                         }
 
                     }
+                    //update config table
+                    var existingcls = _context.Config_tables.Where(x => x.TableName == "StudentClasses").FirstOrDefault();
+                    if (existingcls != null)
+                    {
+                        existingcls.LastUpdatedValue = DateTime.Now;
+                        _context.Config_tables.Update(existingcls);
+                    }
+                    else
+                    {
+                        var _configTable = new Config_table()
+                        {
+                            TableName = "Students",
+                            Active = true,
+                            CreatedDate = DateTime.Now,
+                            Deleted = false,
+                            LastUpdatedValue = DateTime.Now,
+                            OrgId = entity.OrgId,
+                            SubOrgId = entity.SubOrgId,
+                            LastUpdatedColumn = ""
+
+                        };
+                        _context.Config_tables.Add(_configTable);
+                    }
+                    //ends update config table
                 }
                 else
                 {
 
                     //new class
-                    if (entity.ClassAdmissionSought > 0 && entity.Active ==1)// && _admissionStatusId == entity.AdmissionStatusId)
+                    if (entity.ClassAdmissionSought > 0 && entity.Active == 1)// && _admissionStatusId == entity.AdmissionStatusId)
                     {
                         var _studentcount = _context.StudentClasses.Where(x =>
                         x.OrgId == entity.OrgId
@@ -384,7 +442,8 @@ namespace ttpMiddleware.Controllers
                             OrgId = entity.OrgId,
                             SubOrgId = entity.SubOrgId,
                             AdmissionDate = entity.AdmissionDate,
-                            CreatedDate = DateTime.Now
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now
                         };
                         _context.StudentClasses.Add(_studentclass);
                         await _context.SaveChangesAsync();
@@ -406,15 +465,66 @@ namespace ttpMiddleware.Controllers
                             ToMonth = 0,
                             OrgId = entity.OrgId,
                             SubOrgId = entity.SubOrgId,
-                            StudentFeeTypeId = 0
+                            StudentFeeTypeId = 0,
+                            UpdatedDate = DateTime.Now
                         };
 
                         _context.StudentFeeTypes.Add(studentfeetype);
+                        var tables = new List<string>();
+                        tables.Add("StudentClasses");
+                        tables.Add("StudentFeeTypes");
+                        foreach (var item in tables)
+                        {
+                            var existingtable = _context.Config_tables.Where(x => x.TableName == item).FirstOrDefault();
+                            if (existingtable != null)
+                            {
+                                existingtable.LastUpdatedValue = DateTime.Now;
+                                _context.Config_tables.Update(existingtable);
+                            }
+                            else
+                            {
+                                var _configTable = new Config_table()
+                                {
+                                    TableName = item,
+                                    Active = true,
+                                    CreatedDate = DateTime.Now,
+                                    Deleted = false,
+                                    LastUpdatedValue = DateTime.Now,
+                                    OrgId = entity.OrgId,
+                                    SubOrgId = entity.SubOrgId,
+                                    LastUpdatedColumn = ""
 
+                                };
+                                _context.Config_tables.Add(_configTable);
+                            }
+                        }
                     }
                 }
 
+                //update config table
+                var existing = _context.Config_tables.Where(x => x.TableName == "Students").FirstOrDefault();
+                if (existing != null)
+                {
+                    existing.LastUpdatedValue = DateTime.Now;
+                    _context.Config_tables.Update(existing);
+                }
+                else
+                {
+                    var _configTable = new Config_table()
+                    {
+                        TableName = "Students",
+                        Active = true,
+                        CreatedDate = DateTime.Now,
+                        Deleted = false,
+                        LastUpdatedValue = DateTime.Now,
+                        OrgId = entity.OrgId,
+                        SubOrgId = entity.SubOrgId,
+                        LastUpdatedColumn = ""
 
+                    };
+                    _context.Config_tables.Add(_configTable);
+                }
+                //ends update config table
                 await _context.SaveChangesAsync();
                 tran.Commit();
             }

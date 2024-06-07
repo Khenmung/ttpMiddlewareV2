@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ttpMiddleware.Data.Entities;
+using ttpMiddleware.Models;
 
 #nullable disable
 
@@ -43,6 +44,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<ClassMaster> ClassMasters { get; set; }
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; }
         public virtual DbSet<ClassSubjectMarkComponent> ClassSubjectMarkComponents { get; set; }
+        public virtual DbSet<Config_table> Config_tables { get; set; }
         public virtual DbSet<CourseYearSemester> CourseYearSemesters { get; set; }
         public virtual DbSet<CustomFeature> CustomFeatures { get; set; }
         public virtual DbSet<CustomFeatureRolePermission> CustomFeatureRolePermissions { get; set; }
@@ -93,7 +95,6 @@ namespace ttpMiddleware.Models
         public virtual DbSet<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
         public virtual DbSet<LeavePolicy> LeavePolicies { get; set; }
         public virtual DbSet<LedgerPosting> LedgerPostings { get; set; }
-        public virtual DbSet<ManualCertificate> ManualCertificates { get; set; }
         public virtual DbSet<MasterItem> MasterItems { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<News> News { get; set; }
@@ -124,6 +125,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<StudTeacherClassMapping> StudTeacherClassMappings { get; set; }
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<StudentActivity> StudentActivities { get; set; }
+        public virtual DbSet<StudentAdditional> StudentAdditionals { get; set; }
         public virtual DbSet<StudentCertificate> StudentCertificates { get; set; }
         public virtual DbSet<StudentClass> StudentClasses { get; set; }
         public virtual DbSet<StudentClassSubject> StudentClassSubjects { get; set; }
@@ -575,6 +577,15 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.SubjectComponentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ClassSubjectMarkComponents_MasterDataSubjectCompomentId");
+            });
+
+            modelBuilder.Entity<Config_table>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.LastUpdatedColumn).IsUnicode(false);
+
+                entity.Property(e => e.TableName).IsUnicode(false);
             });
 
             modelBuilder.Entity<CourseYearSemester>(entity =>
@@ -1650,23 +1661,6 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_LedgerPosting_GeneralLedger");
             });
 
-            modelBuilder.Entity<ManualCertificate>(entity =>
-            {
-                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Batch).HasDefaultValueSql("('')");
-
-                entity.Property(e => e.Deleted).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Issued).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.PassingYear).HasDefaultValueSql("('')");
-
-                entity.Property(e => e.StudentClassId).HasDefaultValueSql("('')");
-
-                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
-            });
-
             modelBuilder.Entity<MasterItem>(entity =>
             {
                 entity.HasKey(e => e.MasterDataId)
@@ -2386,6 +2380,15 @@ namespace ttpMiddleware.Models
                     .WithMany(p => p.StudentActivities)
                     .HasForeignKey(d => d.StudentId)
                     .HasConstraintName("FK_StudentActivity_StudentId");
+            });
+
+            modelBuilder.Entity<StudentAdditional>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Deleted).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
             });
 
             modelBuilder.Entity<StudentCertificate>(entity =>

@@ -122,7 +122,7 @@ using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return BadRequest(ex);
             }
         }
 

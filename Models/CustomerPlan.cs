@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
+    [Index(nameof(SubOrgId), nameof(OrgId), nameof(Active), Name = "NonClusteredIndex-20240528-114935")]
     public partial class CustomerPlan
     {
         public CustomerPlan()

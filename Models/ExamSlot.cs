@@ -21,7 +21,7 @@ namespace ttpMiddleware.Models
         public short ExamId { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime ExamDate { get; set; }
-        public short SlotNameId { get; set; }
+        public int SlotNameId { get; set; }
         [Required]
         [StringLength(10)]
         public string StartTime { get; set; }

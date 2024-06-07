@@ -50,6 +50,7 @@ namespace ttpMiddleware.Models
         public int RemarkId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+        public byte Sequence { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("ClassSubjects")]

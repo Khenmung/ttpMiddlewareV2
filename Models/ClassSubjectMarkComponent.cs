@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20230830-202157")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(ClassId), nameof(SemesterId), nameof(SectionId), nameof(ExamId), nameof(Active), nameof(Deleted), Name = "NonClusteredIndex-20230830-202157")]
     public partial class ClassSubjectMarkComponent
     {
         public ClassSubjectMarkComponent()

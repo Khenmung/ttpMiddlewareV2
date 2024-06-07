@@ -12,49 +12,49 @@ using ttpMiddleware.Models;
 
 namespace ttpMiddleware.Controllers
 {
-    [ODataRoutePrefix("ManualCertificates")]
+    [ODataRoutePrefix("[controller]")]
     [EnableQuery]
-    public class ManualCertificatesController : ProtectedController
+    public class Config_tableController : ProtectedController
     {
         private readonly ttpauthContext _context;
 
-        public ManualCertificatesController(ttpauthContext context)
+        public Config_tableController(ttpauthContext context)
         {
             _context = context;
         }
 
-        // GET: api/ManualCertificates
+        // GET: api/Config_table
         [HttpGet]
-        public IQueryable<ManualCertificate> GetManualCertificates()
+        public IQueryable<Config_table> GetConfig_table()
         {
-            return _context.ManualCertificates.AsQueryable().AsNoTracking();
+            return _context.Config_tables.AsQueryable().AsNoTracking();
         }
 
-        // GET: api/ManualCertificates/5
+        // GET: api/Config_table/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ManualCertificate>> GetManualCertificate(int id)
+        public async Task<ActionResult<Config_table>> GetConfig_table(int id)
         {
-            var manualCertificate = await _context.ManualCertificates.FindAsync(id);
+            var config_table = await _context.Config_tables.FindAsync(id);
 
-            if (manualCertificate == null)
+            if (config_table == null)
             {
                 return NotFound();
             }
 
-            return manualCertificate;
+            return config_table;
         }
 
-        // PUT: api/ManualCertificates/5
+        // PUT: api/Config_table/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutManualCertificate(int id, ManualCertificate manualCertificate)
+        public async Task<IActionResult> PutConfig_table(int id, Config_table config_table)
         {
-            if (id != manualCertificate.CertificateDataId)
+            if (id != config_table.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(manualCertificate).State = EntityState.Modified;
+            _context.Entry(config_table).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +62,7 @@ namespace ttpMiddleware.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ManualCertificateExists(id))
+                if (!Config_tableExists(id))
                 {
                     return NotFound();
                 }
@@ -74,25 +74,29 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<ManualCertificate> manualCertificate)
+        public async Task<IActionResult> Patch([FromODataUri] short key, [FromBody] Delta<Config_table> batch)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entity = await _context.ManualCertificates.FindAsync(key);
+            var entity = await _context.Config_tables.FindAsync(key);
             if (entity == null)
             {
                 return NotFound();
             }
-            manualCertificate.Patch(entity);
+
+            batch.Patch(entity);
+            //var tran = _context.Database.BeginTransaction();
             try
             {
                 await _context.SaveChangesAsync();
+
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (!ManualCertificateExists(key))
+                //tran.Rollback();
+                if (!Config_tableExists(key))
                 {
                     return NotFound();
                 }
@@ -101,50 +105,52 @@ namespace ttpMiddleware.Controllers
                     return BadRequest(ex);
                 }
             }
+            catch (Exception ex)
+            {
+                //tran.Rollback();
+                return BadRequest(ex);
+            }
+
+            return Updated(entity);
+        }
+        // POST: api/Config_table
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Config_table>> PostConfig_table([FromBody]Config_table config_table)
+        {
+            try
+            {
+                _context.Config_tables.Add(config_table);
+                await _context.SaveChangesAsync();
+
+                return Ok(config_table);
+            }
             catch(Exception ex)
             {
                 return BadRequest(ex);
             }
-            return Updated(entity);
-        }
-        // POST: api/ManualCertificates
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<ManualCertificate>> PostManualCertificate([FromBody]ManualCertificate manualCertificate)
-        {
-            try
-            {
-                _context.ManualCertificates.Add(manualCertificate);
-                await _context.SaveChangesAsync();
-
-                return Ok(manualCertificate);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-            
+           
         }
 
-        // DELETE: api/ManualCertificates/5
+        // DELETE: api/Config_table/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteManualCertificate(int id)
+        public async Task<IActionResult> DeleteConfig_table(int id)
         {
-            var manualCertificate = await _context.ManualCertificates.FindAsync(id);
-            if (manualCertificate == null)
+            var config_table = await _context.Config_tables.FindAsync(id);
+            if (config_table == null)
             {
                 return NotFound();
             }
 
-            _context.ManualCertificates.Remove(manualCertificate);
+            _context.Config_tables.Remove(config_table);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ManualCertificateExists(int id)
+        private bool Config_tableExists(int id)
         {
-            return _context.ManualCertificates.Any(e => e.CertificateDataId == id);
+            return _context.Config_tables.Any(e => e.Id == id);
         }
     }
 }

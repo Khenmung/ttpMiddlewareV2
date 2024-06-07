@@ -115,10 +115,19 @@ namespace ttpMiddleware.Controllers
         [HttpPost]
         public async Task<ActionResult<ExamSlot>> PostExamSlot([FromBody] ExamSlot examSlot)
         {
-            _context.ExamSlots.Add(examSlot);
-            await _context.SaveChangesAsync();
+            try
+            {
 
-            return Ok(examSlot);
+
+                _context.ExamSlots.Add(examSlot);
+                await _context.SaveChangesAsync();
+
+                return Ok(examSlot);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // DELETE: api/ExamSlots/5

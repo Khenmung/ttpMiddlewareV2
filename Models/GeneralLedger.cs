@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("GeneralLedger")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(AccountNatureId), nameof(AccountGroupId), nameof(Active), nameof(Deleted), nameof(History), Name = "NonClusteredIndex-20240610-110354")]
     public partial class GeneralLedger
     {
         public GeneralLedger()
@@ -16,6 +17,8 @@ namespace ttpMiddleware.Models
             AccountingLedgerTrialBalances = new HashSet<AccountingLedgerTrialBalance>();
             AccountingVoucherGeneralLedgerAccounts = new HashSet<AccountingVoucher>();
             AccountingVoucherLedgerPostings = new HashSet<AccountingVoucher>();
+            JournalEntryGeneralLedgerAccounts = new HashSet<JournalEntry>();
+            JournalEntryLedgerPostings = new HashSet<JournalEntry>();
             LedgerPostings = new HashSet<LedgerPosting>();
         }
 
@@ -27,6 +30,7 @@ namespace ttpMiddleware.Models
         public int AccountNatureId { get; set; }
         public int AccountGroupId { get; set; }
         public int? AccountSubGroupId { get; set; }
+        public int? AccountTypeId { get; set; }
         public int? StudentClassId { get; set; }
         public int? EmployeeId { get; set; }
         public short IncomeStatementSequence { get; set; }
@@ -75,6 +79,10 @@ namespace ttpMiddleware.Models
         public virtual ICollection<AccountingVoucher> AccountingVoucherGeneralLedgerAccounts { get; set; }
         [InverseProperty(nameof(AccountingVoucher.LedgerPosting))]
         public virtual ICollection<AccountingVoucher> AccountingVoucherLedgerPostings { get; set; }
+        [InverseProperty(nameof(JournalEntry.GeneralLedgerAccount))]
+        public virtual ICollection<JournalEntry> JournalEntryGeneralLedgerAccounts { get; set; }
+        [InverseProperty(nameof(JournalEntry.LedgerPosting))]
+        public virtual ICollection<JournalEntry> JournalEntryLedgerPostings { get; set; }
         [InverseProperty(nameof(LedgerPosting.PostingGeneralLedger))]
         public virtual ICollection<LedgerPosting> LedgerPostings { get; set; }
     }

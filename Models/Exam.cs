@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(Active), nameof(Deleted), Name = "ExamIndex")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(BatchId), nameof(Active), nameof(Deleted), nameof(History), Name = "ExamIndex")]
     public partial class Exam
     {
         public Exam()

@@ -9,11 +9,12 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("LedgerPosting")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Reference), nameof(Deleted), nameof(History), Name = "NonClusteredIndex-20240608-154206")]
     public partial class LedgerPosting
     {
         [Key]
         public int LedgerPostingId { get; set; }
-        public int AccountingVoucherId { get; set; }
+        public int JournalEntryId { get; set; }
         public int PostingGeneralLedgerId { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amount { get; set; }
@@ -38,9 +39,9 @@ namespace ttpMiddleware.Models
         public bool History { get; set; }
         public Guid SyncId { get; set; }
 
-        [ForeignKey(nameof(AccountingVoucherId))]
+        [ForeignKey(nameof(JournalEntryId))]
         [InverseProperty("LedgerPostings")]
-        public virtual AccountingVoucher AccountingVoucher { get; set; }
+        public virtual JournalEntry JournalEntry { get; set; }
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.LedgerPostings))]
         public virtual Organization Org { get; set; }

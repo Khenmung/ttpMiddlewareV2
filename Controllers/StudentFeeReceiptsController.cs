@@ -240,34 +240,36 @@ namespace ttpMiddleware.Controllers
                 //ends student class becomes active after fee payment
 
                 //var _debit = false;
-                var _generalLedgerAccountId = 0;
-                var _ledgerName = "";
-                var _ledgerAccountName = await _context.MasterItems.Where(x => x.MasterDataId == _StudentFeeReceipt.PaymentTypeId
-                                        && x.OrgId == _StudentFeeReceipt.OrgId
-                                        && x.SubOrgId == _StudentFeeReceipt.SubOrgId).Select(s => s.MasterDataName).FirstOrDefaultAsync();
-                if (_ledgerAccountName.ToLower() == "ats")
-                {
-                    //_debit = true;
-                    _generalLedgerAccountId = (int)_StudentFeeReceipt.AdjustedAccountId;
-                    //_ledgerName = "salary account";
-                }
-                else
-                {
-                    if (_ledgerAccountName.ToLower() == "cash")
-                    {
-                        _ledgerName = "cash account";
-                    }
-                    else if (_ledgerAccountName.ToLower() == "online")
-                    {
-                        _ledgerName = "bank account";
-                    }
+                ////////////////////////////
+                //var _generalLedgerAccountId = 0;
+                //var _ledgerName = "";
+                //var _ledgerAccountName = await _context.MasterItems.Where(x => x.MasterDataId == _StudentFeeReceipt.PaymentTypeId
+                //                        && x.OrgId == _StudentFeeReceipt.OrgId
+                //                        && x.SubOrgId == _StudentFeeReceipt.SubOrgId).Select(s => s.MasterDataName).FirstOrDefaultAsync();
+                //if (_ledgerAccountName.ToLower() == "ats")
+                //{
+                //    //_debit = true;
+                //    _generalLedgerAccountId = (int)_StudentFeeReceipt.AdjustedAccountId;
+                //    //_ledgerName = "salary account";
+                //}
+                //else
+                //{
+                //    if (_ledgerAccountName.ToLower() == "cash")
+                //    {
+                //        _ledgerName = "cash account";
+                //    }
+                //    else if (_ledgerAccountName.ToLower() == "online")
+                //    {
+                //        _ledgerName = "bank account";
+                //    }
 
-                    var _generalAccount = await _context.GeneralLedgers.Where(x => x.GeneralLedgerName.ToLower() == _ledgerName
-                    && x.OrgId == _StudentFeeReceipt.OrgId
-                    && x.SubOrgId == _StudentFeeReceipt.SubOrgId).FirstOrDefaultAsync();
-                    //_debit = true;
-                    _generalLedgerAccountId = (int)_generalAccount.GeneralLedgerId;
-                }
+                //    var _generalAccount = await _context.GeneralLedgers.Where(x => x.GeneralLedgerName.ToLower() == _ledgerName
+                //    && x.OrgId == _StudentFeeReceipt.OrgId
+                //    && x.SubOrgId == _StudentFeeReceipt.SubOrgId).FirstOrDefaultAsync();
+                //    //_debit = true;
+                //    _generalLedgerAccountId = (int)_generalAccount.GeneralLedgerId;
+                //}
+                ///////////////////////////
                 //var _studentLedgerId = await _context.GeneralLedgers.Where(x => x.StudentClassId == _StudentFeeReceipt.StudentClassId)
                 //                            .Select(s => s.GeneralLedgerId).FirstOrDefaultAsync();
                 //var _accountReceivableId = await _context.GeneralLedgers.Where(x =>

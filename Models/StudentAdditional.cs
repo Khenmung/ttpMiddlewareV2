@@ -32,5 +32,9 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public Guid? SyncId { get; set; }
         public bool History { get; set; }
+
+        [ForeignKey(nameof(StudentId))]
+        [InverseProperty("StudentAdditionals")]
+        public virtual Student Student { get; set; }
     }
 }

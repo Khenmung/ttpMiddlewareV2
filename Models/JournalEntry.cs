@@ -8,29 +8,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    public partial class AccountingVoucher
+    [Table("JournalEntry")]
+    public partial class JournalEntry
     {
+        public JournalEntry()
+        {
+            LedgerPostings = new HashSet<LedgerPosting>();
+        }
+
         [Key]
-        public int AccountingVoucherId { get; set; }
+        public int JournalEntryId { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime DocDate { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime PostingDate { get; set; }
         [StringLength(30)]
         public string Reference { get; set; }
-        public int LedgerId { get; set; }
-        public int TranParentId { get; set; }
         public int? GeneralLedgerAccountId { get; set; }
-        public int? FeeReceiptId { get; set; }
-        public int? ParentId { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? BaseAmount { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amount { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Balance { get; set; }
-        public int? Month { get; set; }
-        public short? ClassFeeId { get; set; }
         [Required]
         [StringLength(256)]
         public string ShortText { get; set; }
@@ -47,28 +47,20 @@ namespace ttpMiddleware.Models
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         public bool Deleted { get; set; }
-        public int ActivityTypeId { get; set; }
         public int LedgerPostingId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
 
-        [ForeignKey(nameof(ClassFeeId))]
-        [InverseProperty("AccountingVouchers")]
-        public virtual ClassFee ClassFee { get; set; }
-        [ForeignKey(nameof(FeeReceiptId))]
-        [InverseProperty(nameof(StudentFeeReceipt.AccountingVouchers))]
-        public virtual StudentFeeReceipt FeeReceipt { get; set; }
         [ForeignKey(nameof(GeneralLedgerAccountId))]
-        [InverseProperty(nameof(GeneralLedger.AccountingVoucherGeneralLedgerAccounts))]
+        [InverseProperty(nameof(GeneralLedger.JournalEntryGeneralLedgerAccounts))]
         public virtual GeneralLedger GeneralLedgerAccount { get; set; }
-        [ForeignKey(nameof(LedgerId))]
-        [InverseProperty(nameof(AccountingLedgerTrialBalance.AccountingVouchers))]
-        public virtual AccountingLedgerTrialBalance Ledger { get; set; }
         [ForeignKey(nameof(LedgerPostingId))]
-        [InverseProperty(nameof(GeneralLedger.AccountingVoucherLedgerPostings))]
+        [InverseProperty(nameof(GeneralLedger.JournalEntryLedgerPostings))]
         public virtual GeneralLedger LedgerPosting { get; set; }
         [ForeignKey(nameof(OrgId))]
-        [InverseProperty(nameof(Organization.AccountingVouchers))]
+        [InverseProperty(nameof(Organization.JournalEntries))]
         public virtual Organization Org { get; set; }
+        [InverseProperty("JournalEntry")]
+        public virtual ICollection<LedgerPosting> LedgerPostings { get; set; }
     }
 }

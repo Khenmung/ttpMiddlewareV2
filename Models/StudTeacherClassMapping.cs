@@ -33,6 +33,7 @@ namespace ttpMiddleware.Models
         public int SemesterId { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+        public bool IsClassMaster { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("StudTeacherClassMappings")]

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.OData.Routing;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ttpMiddleware.Models;
-using Microsoft.AspNet.OData.Routing;
-using Microsoft.AspNet.OData;
-
 using ttpMiddleware.CommonFunctions;
 using Newtonsoft.Json.Linq;
 
@@ -16,47 +15,47 @@ namespace ttpMiddleware.Controllers
 {
     [ODataRoutePrefix("[controller]")]
     [EnableQuery]
-    public class AccountingVouchersController : ProtectedController
+    public class JournalEntriesController : ProtectedController
     {
         private readonly ttpauthContext _context;
 
-        public AccountingVouchersController(ttpauthContext context)
+        public JournalEntriesController(ttpauthContext context)
         {
             _context = context;
         }
 
-        // GET: api/AccountingVouchers
+        // GET: api/JournalEntries
         [HttpGet]
-        public IQueryable<AccountingVoucher> GetAccountingVouchers()
+        public IQueryable<JournalEntry> GetJournalEntries()
         {
-            return _context.AccountingVouchers.AsQueryable().AsNoTracking();
+            return _context.JournalEntries.AsQueryable().AsNoTracking();
         }
 
-        // GET: api/AccountingVouchers/5
+        // GET: api/JournalEntries/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AccountingVoucher>> GetAccountingVoucher(int id)
+        public async Task<ActionResult<JournalEntry>> GetJournalEntry(int id)
         {
-            var accountingVoucher = await _context.AccountingVouchers.FindAsync(id);
+            var journalEntry = await _context.JournalEntries.FindAsync(id);
 
-            if (accountingVoucher == null)
+            if (journalEntry == null)
             {
                 return NotFound();
             }
 
-            return accountingVoucher;
+            return journalEntry;
         }
 
-        // PUT: api/AccountingVouchers/5
+        // PUT: api/JournalEntries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccountingVoucher(int id, AccountingVoucher accountingVoucher)
+        public async Task<IActionResult> PutJournalEntry(int id, JournalEntry journalEntry)
         {
-            if (id != accountingVoucher.AccountingVoucherId)
+            if (id != journalEntry.JournalEntryId)
             {
-                return (IActionResult)BadRequest();
+                return BadRequest();
             }
 
-            _context.Entry(accountingVoucher).State = EntityState.Modified;
+            _context.Entry(journalEntry).State = EntityState.Modified;
 
             try
             {
@@ -64,7 +63,7 @@ namespace ttpMiddleware.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AccountingVoucherExists(id))
+                if (!JournalEntryExists(id))
                 {
                     return NotFound();
                 }
@@ -76,46 +75,57 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-
-        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<AccountingVoucher> accountingVoucher)
+        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<JournalEntry> journalEntry)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entity = await _context.AccountingVouchers.FindAsync(key);
+            var entity = await _context.JournalEntries.FindAsync(key);
             if (entity == null)
             {
                 return NotFound();
             }
-            accountingVoucher.Patch(entity);
+
+            journalEntry.Patch(entity);
+            //var tran = _context.Database.BeginTransaction();
             try
             {
                 await _context.SaveChangesAsync();
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!AccountingVoucherExists(key))
+                //tran.Rollback();
+                if (!JournalEntryExists(key))
                 {
                     return NotFound();
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex);
                 }
+            }
+            catch (Exception ex)
+            {
+                //tran.Rollback();
+                return BadRequest(ex);
             }
 
             return Updated(entity);
         }
-
-        // POST: api/AccountingVouchers
+        // POST: api/JournalEntries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AccountingVoucher>> PostAccountingVoucher([FromBody] JObject jsonWrapper)
+        public async Task<ActionResult<JournalEntry>> PostJournalEntry([FromBody] JObject jsonWrapper)
         {
+            //_context.JournalEntries.Add(journalEntry);
+            //await _context.SaveChangesAsync();
+
+            //return Ok(journalEntry);
             JToken jsonValues = jsonWrapper;
             List<LedgerPosting> _LedgerPosting = new List<LedgerPosting>();
-            List<AccountingVoucher> _AccountingVouchers = new List<AccountingVoucher>();
+            List<JournalEntry> _JournalEntry = new List<JournalEntry>();
             using var tran = _context.Database.BeginTransaction();
             try
             {
@@ -123,42 +133,39 @@ namespace ttpMiddleware.Controllers
                 {
                     if (x.Name == "LedgerPosting")
                         _LedgerPosting = x.Value.ToObject<List<LedgerPosting>>();
-                    else if (x.Name == "AccountingVoucher")
-                        _AccountingVouchers = x.Value.ToObject<List<AccountingVoucher>>();
+                    else if (x.Name == "JournalEntry")
+                        _JournalEntry = x.Value.ToObject<List<JournalEntry>>();
 
                 }
-                foreach (AccountingVoucher voucher in _AccountingVouchers)
+                foreach (JournalEntry journal in _JournalEntry)
                 {
-                    if (voucher.AccountingVoucherId == 0)
+                    if (journal.JournalEntryId == 0)
                     {
-                        _context.AccountingVouchers.Add(voucher);
+                        _context.JournalEntries.Add(journal);
                         await _context.SaveChangesAsync();
-                        _LedgerPosting.Where(x => x.PostingGeneralLedgerId == voucher.GeneralLedgerAccountId 
-                        && x.Debit == voucher.Debit).ToList().ForEach(s => s.JournalEntryId = voucher.AccountingVoucherId);
+                        _LedgerPosting.Where(x => x.PostingGeneralLedgerId == journal.GeneralLedgerAccountId
+                        && x.Debit == journal.Debit).ToList().ForEach(s => s.JournalEntryId = journal.JournalEntryId);
                         //foreach (var posting in postings)
                         //    posting.AccountingVoucherId = voucher.AccountingVoucherId;
                     }
                     else
                     {
-                        var existingav = await _context.AccountingVouchers.Where(x => x.AccountingVoucherId == voucher.AccountingVoucherId).FirstOrDefaultAsync();
+                        var existingav = await _context.JournalEntries.Where(x => x.JournalEntryId == journal.JournalEntryId).FirstOrDefaultAsync();
                         if (existingav != null)
                         {
-                            existingav.Balance = voucher.Balance;
-                            existingav.DocDate = voucher.DocDate;
-                            existingav.PostingDate = voucher.PostingDate;
-                            existingav.ClassFeeId = voucher.ClassFeeId;
-                            existingav.FeeReceiptId = voucher.FeeReceiptId;
-                            existingav.ParentId = voucher.ParentId;
-                            existingav.BaseAmount = voucher.BaseAmount;
-                            existingav.Balance = voucher.Balance;
-                            existingav.OrgId = voucher.OrgId;
-                            existingav.SubOrgId = voucher.SubOrgId;
-                            existingav.Amount = voucher.Amount;
-                            existingav.Debit = voucher.Debit;
-                            existingav.Reference = voucher.Reference;
-                            existingav.Active = voucher.Active;
-                            existingav.ShortText = voucher.ShortText;
-                            existingav.UpdatedDate = voucher.UpdatedDate;
+                            existingav.Balance = journal.Balance;
+                            existingav.DocDate = journal.DocDate;
+                            existingav.PostingDate = journal.PostingDate;
+                            existingav.BaseAmount = journal.BaseAmount;
+                            existingav.Balance = journal.Balance;
+                            existingav.OrgId = journal.OrgId;
+                            existingav.SubOrgId = journal.SubOrgId;
+                            existingav.Amount = journal.Amount;
+                            existingav.Debit = journal.Debit;
+                            existingav.Reference = journal.Reference;
+                            existingav.Active = journal.Active;
+                            existingav.ShortText = journal.ShortText;
+                            existingav.UpdatedDate = journal.UpdatedDate;
                             _context.Update(existingav);
                         }
                     }
@@ -191,35 +198,34 @@ namespace ttpMiddleware.Controllers
                 await _context.SaveChangesAsync();
                 tran.Commit();
 
-                return Ok(_AccountingVouchers[0]);
+                return Ok(_JournalEntry[0]);
             }
             catch (Exception ex)
             {
                 tran.Rollback();
                 return BadRequest(ex);
             }
-
         }
 
-        // DELETE: api/AccountingVouchers/5
+        // DELETE: api/JournalEntries/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccountingVoucher(int id)
+        public async Task<IActionResult> DeleteJournalEntry(int id)
         {
-            var accountingVoucher = await _context.AccountingVouchers.FindAsync(id);
-            if (accountingVoucher == null)
+            var journalEntry = await _context.JournalEntries.FindAsync(id);
+            if (journalEntry == null)
             {
                 return NotFound();
             }
 
-            _context.AccountingVouchers.Remove(accountingVoucher);
+            _context.JournalEntries.Remove(journalEntry);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool AccountingVoucherExists(int id)
+        private bool JournalEntryExists(int id)
         {
-            return _context.AccountingVouchers.Any(e => e.AccountingVoucherId == id);
+            return _context.JournalEntries.Any(e => e.JournalEntryId == id);
         }
     }
 }

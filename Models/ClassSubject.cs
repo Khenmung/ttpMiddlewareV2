@@ -51,6 +51,9 @@ namespace ttpMiddleware.Models
         public bool History { get; set; }
         public Guid SyncId { get; set; }
         public byte Sequence { get; set; }
+        [Required]
+        [StringLength(30)]
+        public string SubjectNo { get; set; }
 
         [ForeignKey(nameof(BatchId))]
         [InverseProperty("ClassSubjects")]

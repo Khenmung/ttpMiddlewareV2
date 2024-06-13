@@ -1,15 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using ttpMiddleware.Data.Entities;
-using ttpMiddleware.Models;
 
 #nullable disable
 
 namespace ttpMiddleware.Models
 {
     public partial class ttpauthContext : IdentityDbContext<ApplicationUser>
+
     {
         public ttpauthContext()
         {
@@ -91,6 +89,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<Holiday> Holidays { get; set; }
         public virtual DbSet<InventoryItem> InventoryItems { get; set; }
         public virtual DbSet<InvoiceComponent> InvoiceComponents { get; set; }
+        public virtual DbSet<JournalEntry> JournalEntries { get; set; }
         public virtual DbSet<LeaveBalance> LeaveBalances { get; set; }
         public virtual DbSet<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
         public virtual DbSet<LeavePolicy> LeavePolicies { get; set; }
@@ -101,6 +100,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<OrgPaymentDetail> OrgPaymentDetails { get; set; }
         public virtual DbSet<Organization> Organizations { get; set; }
         public virtual DbSet<OrganizationPayment> OrganizationPayments { get; set; }
+        public virtual DbSet<PackageDetail> PackageDetails { get; set; }
         public virtual DbSet<Page> Pages { get; set; }
         public virtual DbSet<PageHistory> PageHistories { get; set; }
         public virtual DbSet<PhotoGallery> PhotoGalleries { get; set; }
@@ -511,6 +511,10 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<ClassSubject>(entity =>
             {
+                entity.Property(e => e.SubjectNo)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Batch)
@@ -1398,6 +1402,8 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<GeneralLedger>(entity =>
             {
+                entity.Property(e => e.AccountTypeId).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.Address).IsUnicode(false);
 
                 entity.Property(e => e.AssetSequence).HasDefaultValueSql("((999))");
@@ -1543,6 +1549,36 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_InvoiceComponents_Organization");
             });
 
+            modelBuilder.Entity<JournalEntry>(entity =>
+            {
+                entity.Property(e => e.BaseAmount).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Debit).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Reference).IsUnicode(false);
+
+                entity.Property(e => e.ShortText).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.GeneralLedgerAccount)
+                    .WithMany(p => p.JournalEntryGeneralLedgerAccounts)
+                    .HasForeignKey(d => d.GeneralLedgerAccountId)
+                    .HasConstraintName("FK_JournalEntry_GeneralLedger");
+
+                entity.HasOne(d => d.LedgerPosting)
+                    .WithMany(p => p.JournalEntryLedgerPostings)
+                    .HasForeignKey(d => d.LedgerPostingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_JournalEntry_LedgerPostingId");
+
+                entity.HasOne(d => d.Org)
+                    .WithMany(p => p.JournalEntries)
+                    .HasForeignKey(d => d.OrgId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_JournalEntry_Organization");
+            });
+
             modelBuilder.Entity<LeaveBalance>(entity =>
             {
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
@@ -1642,11 +1678,11 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
-                entity.HasOne(d => d.AccountingVoucher)
+                entity.HasOne(d => d.JournalEntry)
                     .WithMany(p => p.LedgerPostings)
-                    .HasForeignKey(d => d.AccountingVoucherId)
+                    .HasForeignKey(d => d.JournalEntryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LedgerPosting_AccountingVouchers");
+                    .HasConstraintName("FK_LedgerPosting_JournalEntry");
 
                 entity.HasOne(d => d.Org)
                     .WithMany(p => p.LedgerPostings)
@@ -1766,6 +1802,21 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.PaymentMode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrgnizationPayment_MasterItemsPaymentmode");
+            });
+
+            modelBuilder.Entity<PackageDetail>(entity =>
+            {
+                entity.Property(e => e.SyncId).ValueGeneratedNever();
+
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.History).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PackageName).IsUnicode(false);
+
+                entity.Property(e => e.PackagePath).IsUnicode(false);
+
+                entity.Property(e => e.TableName).IsUnicode(false);
             });
 
             modelBuilder.Entity<Page>(entity =>
@@ -2389,6 +2440,12 @@ namespace ttpMiddleware.Models
                 entity.Property(e => e.Deleted).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.Student)
+                    .WithMany(p => p.StudentAdditionals)
+                    .HasForeignKey(d => d.StudentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_StudentAdditional_Students");
             });
 
             modelBuilder.Entity<StudentCertificate>(entity =>

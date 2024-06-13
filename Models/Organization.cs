@@ -45,6 +45,7 @@ namespace ttpMiddleware.Models
             Exams = new HashSet<Exam>();
             InventoryItems = new HashSet<InventoryItem>();
             InvoiceComponents = new HashSet<InvoiceComponent>();
+            JournalEntries = new HashSet<JournalEntry>();
             LeaveBalances = new HashSet<LeaveBalance>();
             LeaveEmployeeLeaves = new HashSet<LeaveEmployeeLeaf>();
             LeavePolicies = new HashSet<LeavePolicy>();
@@ -177,6 +178,8 @@ namespace ttpMiddleware.Models
         public virtual ICollection<InventoryItem> InventoryItems { get; set; }
         [InverseProperty(nameof(InvoiceComponent.Org))]
         public virtual ICollection<InvoiceComponent> InvoiceComponents { get; set; }
+        [InverseProperty(nameof(JournalEntry.Org))]
+        public virtual ICollection<JournalEntry> JournalEntries { get; set; }
         [InverseProperty(nameof(LeaveBalance.Org))]
         public virtual ICollection<LeaveBalance> LeaveBalances { get; set; }
         [InverseProperty(nameof(LeaveEmployeeLeaf.Org))]

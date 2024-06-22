@@ -20,23 +20,15 @@ namespace ttpMiddleware.Models
         [StringLength(20)]
         public string SKU { get; set; }
         [Required]
-        [StringLength(20)]
-        public string ItemCode { get; set; }
-        [Required]
         [StringLength(100)]
         public string ShortName { get; set; }
         [StringLength(1000)]
         public string Description { get; set; }
         public int? CategoryId { get; set; }
-        public int? UnitId { get; set; }
-        public short? QtyPerUnit { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal PPP { get; set; }
+        public decimal? MinCount { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal PPU { get; set; }
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? MinPrice { get; set; }
-        public short? MinCount { get; set; }
+        public decimal? MaxCount { get; set; }
         public short OrgId { get; set; }
         public byte Active { get; set; }
         [StringLength(450)]
@@ -53,14 +45,13 @@ namespace ttpMiddleware.Models
         public Guid SyncId { get; set; }
 
         [ForeignKey(nameof(CategoryId))]
-        [InverseProperty(nameof(MasterItem.InventoryItemCategories))]
+        [InverseProperty(nameof(MasterItem.InventoryItems))]
         public virtual MasterItem Category { get; set; }
         [ForeignKey(nameof(OrgId))]
         [InverseProperty(nameof(Organization.InventoryItems))]
         public virtual Organization Org { get; set; }
-        [ForeignKey(nameof(UnitId))]
-        [InverseProperty(nameof(MasterItem.InventoryItemUnits))]
-        public virtual MasterItem Unit { get; set; }
+        [InverseProperty("InventoryNavigation")]
+        public virtual Inventory Inventory { get; set; }
         [InverseProperty(nameof(CustomerInvoiceItem.InventoryItem))]
         public virtual ICollection<CustomerInvoiceItem> CustomerInvoiceItems { get; set; }
     }

@@ -8,35 +8,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Table("PackageDetail")]
-    public partial class PackageDetail
+    [Table("ConfigTable")]
+    public partial class ConfigTable
     {
         [Key]
-        public int PackageDetailId { get; set; }
+        public int ConfigTableId { get; set; }
         [Required]
-        [StringLength(30)]
+        [StringLength(200)]
         public string TableName { get; set; }
         [Required]
-        [StringLength(30)]
-        public string PackageName { get; set; }
-        [Required]
-        [StringLength(50)]
-        public string PackagePath { get; set; }
-        public short Sequence { get; set; }
+        [StringLength(100)]
+        public string LastUpdatedColumn { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime LastUpdatedValue { get; set; }
         public short OrgId { get; set; }
         public int SubOrgId { get; set; }
         [Required]
         public bool? Active { get; set; }
         public bool Deleted { get; set; }
+        public bool History { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? CreatedDate { get; set; }
+        [StringLength(450)]
+        public string UpdatedBy { get; set; }
         [StringLength(450)]
         public string CreatedBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? UpdatedDate { get; set; }
-        [StringLength(450)]
-        public string UpdatedBy { get; set; }
-        public bool? History { get; set; }
-        public short BatchId { get; set; }
     }
 }

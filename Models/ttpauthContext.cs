@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ttpMiddleware.Data.Entities;
 
@@ -7,7 +8,6 @@ using ttpMiddleware.Data.Entities;
 namespace ttpMiddleware.Models
 {
     public partial class ttpauthContext : IdentityDbContext<ApplicationUser>
-
     {
         public ttpauthContext()
         {
@@ -42,7 +42,7 @@ namespace ttpMiddleware.Models
         public virtual DbSet<ClassMaster> ClassMasters { get; set; }
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; }
         public virtual DbSet<ClassSubjectMarkComponent> ClassSubjectMarkComponents { get; set; }
-        public virtual DbSet<Config_table> Config_tables { get; set; }
+        public virtual DbSet<ConfigTable> ConfigTables { get; set; }
         public virtual DbSet<CourseYearSemester> CourseYearSemesters { get; set; }
         public virtual DbSet<CustomFeature> CustomFeatures { get; set; }
         public virtual DbSet<CustomFeatureRolePermission> CustomFeatureRolePermissions { get; set; }
@@ -87,8 +87,10 @@ namespace ttpMiddleware.Models
         public virtual DbSet<GroupActivityParticipant> GroupActivityParticipants { get; set; }
         public virtual DbSet<GroupPoint> GroupPoints { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
+        public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<InventoryItem> InventoryItems { get; set; }
         public virtual DbSet<InvoiceComponent> InvoiceComponents { get; set; }
+        public virtual DbSet<ItemPhotoStore> ItemPhotoStores { get; set; }
         public virtual DbSet<JournalEntry> JournalEntries { get; set; }
         public virtual DbSet<LeaveBalance> LeaveBalances { get; set; }
         public virtual DbSet<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
@@ -583,7 +585,7 @@ namespace ttpMiddleware.Models
                     .HasConstraintName("FK_ClassSubjectMarkComponents_MasterDataSubjectCompomentId");
             });
 
-            modelBuilder.Entity<Config_table>(entity =>
+            modelBuilder.Entity<ConfigTable>(entity =>
             {
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
 
@@ -1493,15 +1495,32 @@ namespace ttpMiddleware.Models
                 entity.Property(e => e.Title).IsUnicode(false);
             });
 
+            modelBuilder.Entity<Inventory>(entity =>
+            {
+                entity.Property(e => e.InventoryId).ValueGeneratedNever();
+
+                entity.Property(e => e.Active).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.PhotoPath)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.QrcodePath)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.Remarks).IsUnicode(false);
+
+                entity.HasOne(d => d.InventoryNavigation)
+                    .WithOne(p => p.Inventory)
+                    .HasForeignKey<Inventory>(d => d.InventoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Inventory_InventoryItems");
+            });
+
             modelBuilder.Entity<InventoryItem>(entity =>
             {
                 entity.Property(e => e.Description).IsUnicode(false);
-
-                entity.Property(e => e.ItemCode).IsUnicode(false);
-
-                entity.Property(e => e.PPP).HasComment("Price per Piece");
-
-                entity.Property(e => e.PPU).HasComment("Price per unit");
 
                 entity.Property(e => e.SKU).IsUnicode(false);
 
@@ -1510,7 +1529,7 @@ namespace ttpMiddleware.Models
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
 
                 entity.HasOne(d => d.Category)
-                    .WithMany(p => p.InventoryItemCategories)
+                    .WithMany(p => p.InventoryItems)
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_InventoryItems_MasterDataCategoryId");
 
@@ -1519,11 +1538,6 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.OrgId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_InventoryItems_Organization");
-
-                entity.HasOne(d => d.Unit)
-                    .WithMany(p => p.InventoryItemUnits)
-                    .HasForeignKey(d => d.UnitId)
-                    .HasConstraintName("FK_InventoryItems_MasterDataUnitId");
             });
 
             modelBuilder.Entity<InvoiceComponent>(entity =>
@@ -1547,6 +1561,19 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.OrgId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_InvoiceComponents_Organization");
+            });
+
+            modelBuilder.Entity<ItemPhotoStore>(entity =>
+            {
+                entity.Property(e => e.PhotoName).IsUnicode(false);
+
+                entity.Property(e => e.PhotoPath).IsUnicode(false);
+
+                entity.Property(e => e.QrCodePath).IsUnicode(false);
+
+                entity.Property(e => e.QrcodeName).IsUnicode(false);
+
+                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
             });
 
             modelBuilder.Entity<JournalEntry>(entity =>
@@ -1806,8 +1833,6 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<PackageDetail>(entity =>
             {
-                entity.Property(e => e.SyncId).ValueGeneratedNever();
-
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.History).HasDefaultValueSql("((0))");

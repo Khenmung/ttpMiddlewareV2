@@ -20,7 +20,7 @@ namespace ttpMiddleware.Models
         [Required]
         [StringLength(256)]
         public string Formula { get; set; }
-        public byte? Points { get; set; }
+        public short? Points { get; set; }
         public int SubjectCategoryId { get; set; }
         public int? ClassGroupId { get; set; }
         public int? GradeStatusId { get; set; }

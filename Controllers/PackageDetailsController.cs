@@ -7,54 +7,54 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ttpMiddleware.CommonFunctions;
 using ttpMiddleware.Models;
+using ttpMiddleware.CommonFunctions;
 
 namespace ttpMiddleware.Controllers
 {
     [ODataRoutePrefix("[controller]")]
     [EnableQuery]
-    public class Config_tableController : ProtectedController
+    public class PackageDetailsController : ProtectedController
     {
         private readonly ttpauthContext _context;
 
-        public Config_tableController(ttpauthContext context)
+        public PackageDetailsController(ttpauthContext context)
         {
             _context = context;
         }
 
-        // GET: api/Config_table
+        // GET: api/PackageDetails
         [HttpGet]
-        public IQueryable<Config_table> GetConfig_table()
+        public IQueryable<PackageDetail> GetPackageDetails()
         {
-            return _context.Config_tables.AsQueryable().AsNoTracking();
+            return _context.PackageDetails.AsQueryable().AsNoTracking();
         }
 
-        // GET: api/Config_table/5
+        // GET: api/PackageDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Config_table>> GetConfig_table(int id)
+        public async Task<ActionResult<PackageDetail>> GetPackageDetail(Guid id)
         {
-            var config_table = await _context.Config_tables.FindAsync(id);
+            var packageDetail = await _context.PackageDetails.FindAsync(id);
 
-            if (config_table == null)
+            if (packageDetail == null)
             {
                 return NotFound();
             }
 
-            return config_table;
+            return packageDetail;
         }
 
-        // PUT: api/Config_table/5
+        // PUT: api/PackageDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutConfig_table(int id, Config_table config_table)
+        public async Task<IActionResult> PutPackageDetail(int id, PackageDetail packageDetail)
         {
-            if (id != config_table.Id)
+            if (id != packageDetail.PackageDetailId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(config_table).State = EntityState.Modified;
+            _context.Entry(packageDetail).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +62,7 @@ namespace ttpMiddleware.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Config_tableExists(id))
+                if (!PackageDetailExists(id))
                 {
                     return NotFound();
                 }
@@ -74,19 +74,19 @@ namespace ttpMiddleware.Controllers
 
             return NoContent();
         }
-        public async Task<IActionResult> Patch([FromODataUri] short key, [FromBody] Delta<Config_table> batch)
+        public async Task<IActionResult> Patch([FromODataUri] int key, [FromBody] Delta<PackageDetail> packageDetail)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entity = await _context.Config_tables.FindAsync(key);
+            var entity = await _context.PackageDetails.FindAsync(key);
             if (entity == null)
             {
                 return NotFound();
             }
 
-            batch.Patch(entity);
+            packageDetail.Patch(entity);
             //var tran = _context.Database.BeginTransaction();
             try
             {
@@ -96,7 +96,7 @@ namespace ttpMiddleware.Controllers
             catch (DbUpdateConcurrencyException ex)
             {
                 //tran.Rollback();
-                if (!Config_tableExists(key))
+                if (!PackageDetailExists(key))
                 {
                     return NotFound();
                 }
@@ -113,44 +113,36 @@ namespace ttpMiddleware.Controllers
 
             return Updated(entity);
         }
-        // POST: api/Config_table
+        // POST: api/PackageDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Config_table>> PostConfig_table([FromBody]Config_table config_table)
+        public async Task<ActionResult<PackageDetail>> PostPackageDetail([FromBody]PackageDetail packageDetail)
         {
-            try
-            {
-                _context.Config_tables.Add(config_table);
-                await _context.SaveChangesAsync();
+            _context.PackageDetails.Add(packageDetail);
+            await _context.SaveChangesAsync();
 
-                return Ok(config_table);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex);
-            }
-           
+            return Ok(packageDetail);
         }
 
-        // DELETE: api/Config_table/5
+        // DELETE: api/PackageDetails/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteConfig_table(int id)
+        public async Task<IActionResult> DeletePackageDetail(Guid id)
         {
-            var config_table = await _context.Config_tables.FindAsync(id);
-            if (config_table == null)
+            var packageDetail = await _context.PackageDetails.FindAsync(id);
+            if (packageDetail == null)
             {
                 return NotFound();
             }
 
-            _context.Config_tables.Remove(config_table);
+            _context.PackageDetails.Remove(packageDetail);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool Config_tableExists(int id)
+        private bool PackageDetailExists(int id)
         {
-            return _context.Config_tables.Any(e => e.Id == id);
+            return _context.PackageDetails.Any(e => e.PackageDetailId== id);
         }
     }
 }

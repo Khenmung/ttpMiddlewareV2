@@ -139,6 +139,19 @@ namespace ttpMiddleware.Controllers
             int TotalMarks = 0;
 
             var temp = studentEvaluationResult[0].ToObject<StudentEvaluationResult>();
+            var ids = studentEvaluationResult.Children<JObject>()
+                .Select(jo => new { StudentClassId=jo["StudentClassId"], Submitted= jo["Submitted"],
+                    EvaluationExamMapId = jo["EvaluationExamMapId"],
+                    ClassId = jo["ClassId"],
+                    SectionId = jo["SectionId"],
+                    SemesterId = jo["SemesterId"],
+                    OrgId = jo["OrgId"],
+                    SubOrgId = jo["SubOrgId"],
+                    CreatedBy = jo["Createdby"]
+                })   // NOTE: this is case sensitive
+                .Where(s => s != null)
+                .Distinct()
+                .ToList();
 
             var ResultDetail = await _context.EvaluationExamMaps
                     .Join(_context.EvaluationMasters,
@@ -223,35 +236,40 @@ namespace ttpMiddleware.Controllers
                 //studentEvaluationResult.Count()>0 means if it is not single question save.
                 //if (studentEvaluationResult.Count()>0 &&
                 //    ResultDetail.Count > 0 && ResultDetail[0].DisplayResult == true)
+                
                 if (temp.Submitted)
                 {
-                    var resultMark = await _context.EvaluationResultMarks.Where(x => x.StudentClassId == temp.StudentClassId &&
-                                        x.EvaluationExamMapId == temp.EvaluationExamMapId).FirstOrDefaultAsync();
-                    if (resultMark == null)
+                    foreach (var item in ids)
                     {
-                        var result = new EvaluationResultMark();
-                        result.StudentClassId = temp.StudentClassId;
-                        result.EvaluationExamMapId = temp.EvaluationExamMapId;
-                        result.ClassId = temp.ClassId;
-                        result.SectionId = temp.SectionId;
-                        result.SemesterId = temp.SemesterId;
-                        result.EvaluationResultMarkId = 0;
-                        result.TotalMark = 0;
-                        result.Rank = 0;
-                        result.OrgId = temp.OrgId;
-                        result.SubOrgId = temp.SubOrgId;
-                        result.Active = true;
-                        result.Comments = "";
-                        result.CreatedDate = DateTime.Now;
-                        result.CreatedBy = temp.CreatedBy;
-                        _context.EvaluationResultMarks.Add(result);
+
+
+                        var resultMark = await _context.EvaluationResultMarks.Where(x => x.StudentClassId == (int)item.StudentClassId &&
+                                            x.EvaluationExamMapId == (int)item.EvaluationExamMapId).FirstOrDefaultAsync();
+                        if (resultMark == null)
+                        {
+                            var result = new EvaluationResultMark();
+                            result.StudentClassId = (int)item.StudentClassId;
+                            result.EvaluationExamMapId = (int)item.EvaluationExamMapId;
+                            result.ClassId = (int)item.ClassId;
+                            result.SectionId = (int)item.SectionId;
+                            result.SemesterId = (int)item.SemesterId;
+                            result.EvaluationResultMarkId = 0;
+                            result.TotalMark = 0;
+                            result.Rank = 0;
+                            result.OrgId = temp.OrgId;
+                            result.SubOrgId = temp.SubOrgId;
+                            result.Active = true;
+                            result.Comments = "";
+                            result.CreatedDate = DateTime.Now;
+                            result.CreatedBy = (string)item.CreatedBy;
+                            _context.EvaluationResultMarks.Add(result);
+                        }
+                        else
+                        {
+                            resultMark.Active = true;
+                            _context.Update(resultMark);
+                        }
                     }
-                    else
-                    {
-                        resultMark.Active = true;
-                        _context.Update(resultMark);
-                    }
-                        
                     //var _examStatusId = 0;
                     //if (TotalMarks > 0)
                     //{

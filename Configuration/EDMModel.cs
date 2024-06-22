@@ -134,8 +134,9 @@ namespace ttpMiddleware.Configuration
             builder.EntitySet<StudentFeeType>("StudentFeeTypes");
             builder.EntitySet<DataSync>("DataSyncs");
             builder.EntitySet<StudentAdditional>("StudentAdditionals");
-            builder.EntitySet<Config_table>("Configtables");
+            builder.EntitySet<ConfigTable>("ConfigTables");
             builder.EntitySet<JournalEntry>("JournalEntries");
+            builder.EntitySet<PackageDetail>("PackageDetails");
 
             return builder.GetEdmModel();
         }

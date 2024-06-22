@@ -28,8 +28,7 @@ namespace ttpMiddleware.Models
             EmployeeFamilyGenderNavigations = new HashSet<EmployeeFamily>();
             Exams = new HashSet<Exam>();
             FeeDefinitions = new HashSet<FeeDefinition>();
-            InventoryItemCategories = new HashSet<InventoryItem>();
-            InventoryItemUnits = new HashSet<InventoryItem>();
+            InventoryItems = new HashSet<InventoryItem>();
             InvoiceComponents = new HashSet<InvoiceComponent>();
             LeaveEmployeeLeaves = new HashSet<LeaveEmployeeLeaf>();
             LeavePolicies = new HashSet<LeavePolicy>();
@@ -115,9 +114,7 @@ namespace ttpMiddleware.Models
         [InverseProperty(nameof(FeeDefinition.FeeCategory))]
         public virtual ICollection<FeeDefinition> FeeDefinitions { get; set; }
         [InverseProperty(nameof(InventoryItem.Category))]
-        public virtual ICollection<InventoryItem> InventoryItemCategories { get; set; }
-        [InverseProperty(nameof(InventoryItem.Unit))]
-        public virtual ICollection<InventoryItem> InventoryItemUnits { get; set; }
+        public virtual ICollection<InventoryItem> InventoryItems { get; set; }
         [InverseProperty(nameof(InvoiceComponent.Component))]
         public virtual ICollection<InvoiceComponent> InvoiceComponents { get; set; }
         [InverseProperty(nameof(LeaveEmployeeLeaf.LeaveStatus))]

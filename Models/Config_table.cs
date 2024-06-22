@@ -12,7 +12,7 @@ namespace ttpMiddleware.Models
     public partial class Config_table
     {
         [Key]
-        public int Id { get; set; }
+        public int ConfigTableId { get; set; }
         [Required]
         [StringLength(200)]
         public string TableName { get; set; }
@@ -26,7 +26,14 @@ namespace ttpMiddleware.Models
         [Required]
         public bool? Active { get; set; }
         public bool Deleted { get; set; }
+        public bool History { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? CreatedDate { get; set; }
+        [StringLength(450)]
+        public string UpdatedBy { get; set; }
+        [StringLength(450)]
+        public string CreatedBy { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? UpdatedDate { get; set; }
     }
 }

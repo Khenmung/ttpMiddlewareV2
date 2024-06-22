@@ -8,35 +8,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ttpMiddleware.Models
 {
-    [Table("PackageDetail")]
-    public partial class PackageDetail
+    [Table("ItemPhotoStore")]
+    public partial class ItemPhotoStore
     {
         [Key]
-        public int PackageDetailId { get; set; }
-        [Required]
-        [StringLength(30)]
-        public string TableName { get; set; }
-        [Required]
-        [StringLength(30)]
-        public string PackageName { get; set; }
+        public int ItemStoreId { get; set; }
+        public int ItemId { get; set; }
         [Required]
         [StringLength(50)]
-        public string PackagePath { get; set; }
-        public short Sequence { get; set; }
+        public string PhotoName { get; set; }
+        [Required]
+        [StringLength(150)]
+        public string PhotoPath { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string QrcodeName { get; set; }
+        [Required]
+        [StringLength(150)]
+        public string QrCodePath { get; set; }
         public short OrgId { get; set; }
         public int SubOrgId { get; set; }
-        [Required]
-        public bool? Active { get; set; }
-        public bool Deleted { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? CreatedDate { get; set; }
         [StringLength(450)]
         public string CreatedBy { get; set; }
         [Column(TypeName = "datetime")]
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         [StringLength(450)]
         public string UpdatedBy { get; set; }
-        public bool? History { get; set; }
-        public short BatchId { get; set; }
+        public bool Active { get; set; }
+        public bool Deleted { get; set; }
+        public bool History { get; set; }
+        public Guid SyncId { get; set; }
     }
 }

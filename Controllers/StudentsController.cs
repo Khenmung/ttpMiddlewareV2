@@ -223,15 +223,15 @@ namespace ttpMiddleware.Controllers
                                     tables.Add("StudentFeeTypes");
                                     foreach (var item in tables)
                                     {
-                                        var existing = _context.Config_tables.Where(x => x.TableName == item).FirstOrDefault();
+                                        var existing = _context.ConfigTables.Where(x => x.TableName == item).FirstOrDefault();
                                         if (existing != null)
                                         {
                                             existing.LastUpdatedValue = DateTime.Now;
-                                            _context.Config_tables.Update(existing);
+                                            _context.ConfigTables.Update(existing);
                                         }
                                         else
                                         {
-                                            var _configTable = new Config_table()
+                                            var _configTable = new ConfigTable()
                                             {
                                                 TableName = item,
                                                 Active = true,
@@ -243,7 +243,7 @@ namespace ttpMiddleware.Controllers
                                                 LastUpdatedColumn = ""
 
                                             };
-                                            _context.Config_tables.Add(_configTable);
+                                            _context.ConfigTables.Add(_configTable);
                                         }
                                     }
                                     
@@ -386,15 +386,15 @@ namespace ttpMiddleware.Controllers
 
                     }
                     //update config table
-                    var existingcls = _context.Config_tables.Where(x => x.TableName == "StudentClasses").FirstOrDefault();
+                    var existingcls = _context.ConfigTables.Where(x => x.TableName == "StudentClasses").FirstOrDefault();
                     if (existingcls != null)
                     {
                         existingcls.LastUpdatedValue = DateTime.Now;
-                        _context.Config_tables.Update(existingcls);
+                        _context.ConfigTables.Update(existingcls);
                     }
                     else
                     {
-                        var _configTable = new Config_table()
+                        var _configTable = new ConfigTable()
                         {
                             TableName = "Students",
                             Active = true,
@@ -406,7 +406,7 @@ namespace ttpMiddleware.Controllers
                             LastUpdatedColumn = ""
 
                         };
-                        _context.Config_tables.Add(_configTable);
+                        _context.ConfigTables.Add(_configTable);
                     }
                     //ends update config table
                 }
@@ -475,15 +475,15 @@ namespace ttpMiddleware.Controllers
                         tables.Add("StudentFeeTypes");
                         foreach (var item in tables)
                         {
-                            var existingtable = _context.Config_tables.Where(x => x.TableName == item).FirstOrDefault();
+                            var existingtable = _context.ConfigTables.Where(x => x.TableName == item).FirstOrDefault();
                             if (existingtable != null)
                             {
                                 existingtable.LastUpdatedValue = DateTime.Now;
-                                _context.Config_tables.Update(existingtable);
+                                _context.ConfigTables.Update(existingtable);
                             }
                             else
                             {
-                                var _configTable = new Config_table()
+                                var _configTable = new ConfigTable()
                                 {
                                     TableName = item,
                                     Active = true,
@@ -495,22 +495,22 @@ namespace ttpMiddleware.Controllers
                                     LastUpdatedColumn = ""
 
                                 };
-                                _context.Config_tables.Add(_configTable);
+                                _context.ConfigTables.Add(_configTable);
                             }
                         }
                     }
                 }
 
                 //update config table
-                var existing = _context.Config_tables.Where(x => x.TableName == "Students").FirstOrDefault();
+                var existing = _context.ConfigTables.Where(x => x.TableName == "Students").FirstOrDefault();
                 if (existing != null)
                 {
                     existing.LastUpdatedValue = DateTime.Now;
-                    _context.Config_tables.Update(existing);
+                    _context.ConfigTables.Update(existing);
                 }
                 else
                 {
-                    var _configTable = new Config_table()
+                    var _configTable = new ConfigTable()
                     {
                         TableName = "Students",
                         Active = true,
@@ -522,7 +522,7 @@ namespace ttpMiddleware.Controllers
                         LastUpdatedColumn = ""
 
                     };
-                    _context.Config_tables.Add(_configTable);
+                    _context.ConfigTables.Add(_configTable);
                 }
                 //ends update config table
                 await _context.SaveChangesAsync();

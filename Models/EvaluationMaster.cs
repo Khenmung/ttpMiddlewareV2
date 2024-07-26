@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("EvaluationMaster")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), nameof(History), Name = "NonClusteredIndex-20240606-140117")]
+    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Deleted), nameof(History), Name = "NonClusteredIndex-20240606-135947")]
     public partial class EvaluationMaster
     {
         public EvaluationMaster()

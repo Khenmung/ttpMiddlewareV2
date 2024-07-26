@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("GeneralLedger")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(AccountNatureId), nameof(AccountGroupId), nameof(Active), nameof(Deleted), nameof(History), Name = "NonClusteredIndex-20240610-110354")]
     public partial class GeneralLedger
     {
         public GeneralLedger()
@@ -30,7 +29,6 @@ namespace ttpMiddleware.Models
         public int AccountNatureId { get; set; }
         public int AccountGroupId { get; set; }
         public int? AccountSubGroupId { get; set; }
-        public int? AccountTypeId { get; set; }
         public int? StudentClassId { get; set; }
         public int? EmployeeId { get; set; }
         public short IncomeStatementSequence { get; set; }
@@ -66,6 +64,7 @@ namespace ttpMiddleware.Models
         public bool Deleted { get; set; }
         public bool History { get; set; }
         public Guid SyncId { get; set; }
+        public int AccountTypeId { get; set; }
 
         [ForeignKey(nameof(AccountGroupId))]
         [InverseProperty("GeneralLedgerAccountGroups")]

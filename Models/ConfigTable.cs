@@ -11,6 +11,11 @@ namespace ttpMiddleware.Models
     [Table("ConfigTable")]
     public partial class ConfigTable
     {
+        public ConfigTable()
+        {
+            PackageDetails = new HashSet<PackageDetail>();
+        }
+
         [Key]
         public int ConfigTableId { get; set; }
         [Required]
@@ -26,14 +31,17 @@ namespace ttpMiddleware.Models
         [Required]
         public bool? Active { get; set; }
         public bool Deleted { get; set; }
-        public bool History { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? CreatedDate { get; set; }
+        public bool History { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? UpdatedDate { get; set; }
         [StringLength(450)]
         public string UpdatedBy { get; set; }
         [StringLength(450)]
         public string CreatedBy { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? UpdatedDate { get; set; }
+
+        [InverseProperty(nameof(PackageDetail.ConfigTable))]
+        public virtual ICollection<PackageDetail> PackageDetails { get; set; }
     }
 }

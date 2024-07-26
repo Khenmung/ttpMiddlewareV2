@@ -5,9 +5,7 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNet.OData.Routing;
-using ttpMiddleware.Models.DTOs.Requests;
 using System;
-using System.Collections.Generic;
 
 using ttpMiddleware.CommonFunctions;
 namespace ttpMiddleware.Controllers
@@ -262,13 +260,14 @@ namespace ttpMiddleware.Controllers
         [HttpPost]
         public async Task<ActionResult<StudentClass>> PostStudentClass([FromBody] StudentClass studentClass)
         {
-            var _existing = await _context.StudentClasses.Where(x => x.StudentId == studentClass.StudentId
+            var _existing = await _context.StudentClasses.Where(x => 
+            x.StudentId == studentClass.StudentId
             && x.ClassId == studentClass.ClassId
             && x.SemesterId == studentClass.SemesterId
+            && x.SectionId == studentClass.SectionId
             && x.BatchId == studentClass.BatchId
             && x.OrgId == studentClass.OrgId
-            && x.SubOrgId == studentClass.SubOrgId
-            ).ToListAsync();
+            && x.SubOrgId == studentClass.SubOrgId).ToListAsync();
             if (_existing.Count > 0)
             {
                 return BadRequest(studentClass.StudentId + "-Student already exist in the same batch.");

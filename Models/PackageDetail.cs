@@ -13,9 +13,7 @@ namespace ttpMiddleware.Models
     {
         [Key]
         public int PackageDetailId { get; set; }
-        [Required]
-        [StringLength(30)]
-        public string TableName { get; set; }
+        public int ConfigTableId { get; set; }
         [Required]
         [StringLength(30)]
         public string PackageName { get; set; }
@@ -38,5 +36,9 @@ namespace ttpMiddleware.Models
         public string UpdatedBy { get; set; }
         public bool? History { get; set; }
         public short BatchId { get; set; }
+
+        [ForeignKey(nameof(ConfigTableId))]
+        [InverseProperty("PackageDetails")]
+        public virtual ConfigTable ConfigTable { get; set; }
     }
 }

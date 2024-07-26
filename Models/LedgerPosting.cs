@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace ttpMiddleware.Models
 {
     [Table("LedgerPosting")]
-    [Index(nameof(OrgId), nameof(SubOrgId), nameof(Active), nameof(Reference), nameof(Deleted), nameof(History), Name = "NonClusteredIndex-20240608-154206")]
     public partial class LedgerPosting
     {
         [Key]

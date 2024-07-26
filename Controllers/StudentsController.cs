@@ -312,15 +312,22 @@ namespace ttpMiddleware.Controllers
             {
                 return NotFound();
             }
-            var existingstudent = _context.Students.Where(x => x.FirstName == entity.FirstName
-                            && x.LastName == entity.LastName
-                            && x.FatherName == entity.FatherName
-                            && x.OrgId == entity.OrgId
-                            && x.SubOrgId == entity.SubOrgId
-                            ).Any();
-            if (!existingstudent)
-                return BadRequest("Same student name and father's name already exists. firstname: " + entity.FirstName + ", fathername: " + entity.FatherName);
+            var changedProperties = student.GetChangedPropertyNames();
+            if (changedProperties.Contains(nameof(entity.Active)))
+            {
 
+                if (student.GetInstance().Active == 1)
+                {
+                    var existingstudent = _context.Students.Where(x => x.FirstName == entity.FirstName
+                                    && x.LastName == entity.LastName
+                                    && x.FatherName == entity.FatherName
+                                    && x.OrgId == entity.OrgId
+                                    && x.SubOrgId == entity.SubOrgId
+                                    && x.StudentId != entity.StudentId).Any();
+                    if (existingstudent)
+                        return BadRequest("Same student name and father's name already exists. firstname: " + entity.FirstName + ", fathername: " + entity.FatherName);
+                }
+            }
             student.Patch(entity);
             using var tran = _context.Database.BeginTransaction();
 

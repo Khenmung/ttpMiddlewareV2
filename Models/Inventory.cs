@@ -14,6 +14,9 @@ namespace ttpMiddleware.Models
         [Key]
         public int InventoryId { get; set; }
         public int InventoryItemId { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string SKU { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Quantity { get; set; }
         public int UnitId { get; set; }
@@ -28,6 +31,9 @@ namespace ttpMiddleware.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? CPP { get; set; }
         public int PaymentTypeId { get; set; }
+        public int? ModelId { get; set; }
+        public int? ColorId { get; set; }
+        public int? SizeId { get; set; }
         public int StatusId { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime StatusDate { get; set; }

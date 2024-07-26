@@ -146,9 +146,13 @@ using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
                 && x.OrgId == entity.OrgId && x.SubOrgId == entity.SubOrgId).FirstOrDefaultAsync();
                 if (_existingaccount == null)
                 {
-                    var _employeeAccountNatureId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "liability").Select(s => s.AccountNatureId).FirstOrDefaultAsync();
+                    var _employeeAccountNatureId = await _context.AccountNatures.Where(x => x.AccountName.ToLower() == "liability"
+                    && x.OrgId == entity.OrgId)
+                        .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
                     
-                    var _employeeAccountGroupId = await _context.AccountNatures.Where(x => x.SubOrgId== entity.SubOrgId && x.OrgId== entity.OrgId && x.AccountName.ToLower() == "current liability").Select(s => s.AccountNatureId).FirstOrDefaultAsync();
+                    var _employeeAccountGroupId = await _context.AccountNatures.Where(x => x.SubOrgId== entity.SubOrgId 
+                    && x.OrgId== entity.OrgId && x.AccountName.ToLower() == "current liability")
+                        .Select(s => s.AccountNatureId).FirstOrDefaultAsync();
                     var _employeeLedger = new GeneralLedger()
                     {
                         GeneralLedgerName = entity.FirstName + " " + entity.LastName + "-" + entity.EmployeeCode,
@@ -210,7 +214,7 @@ using ttpMiddleware.CommonFunctions;namespace ttpMiddleware.Controllers
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex);
                 }
             }
 

@@ -90,7 +90,6 @@ namespace ttpMiddleware.Models
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<InventoryItem> InventoryItems { get; set; }
         public virtual DbSet<InvoiceComponent> InvoiceComponents { get; set; }
-        public virtual DbSet<ItemPhotoStore> ItemPhotoStores { get; set; }
         public virtual DbSet<JournalEntry> JournalEntries { get; set; }
         public virtual DbSet<LeaveBalance> LeaveBalances { get; set; }
         public virtual DbSet<LeaveEmployeeLeaf> LeaveEmployeeLeaves { get; set; }
@@ -1404,8 +1403,6 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<GeneralLedger>(entity =>
             {
-                entity.Property(e => e.AccountTypeId).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.Address).IsUnicode(false);
 
                 entity.Property(e => e.AssetSequence).HasDefaultValueSql("((999))");
@@ -1522,8 +1519,6 @@ namespace ttpMiddleware.Models
             {
                 entity.Property(e => e.Description).IsUnicode(false);
 
-                entity.Property(e => e.SKU).IsUnicode(false);
-
                 entity.Property(e => e.ShortName).IsUnicode(false);
 
                 entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
@@ -1561,19 +1556,6 @@ namespace ttpMiddleware.Models
                     .HasForeignKey(d => d.OrgId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_InvoiceComponents_Organization");
-            });
-
-            modelBuilder.Entity<ItemPhotoStore>(entity =>
-            {
-                entity.Property(e => e.PhotoName).IsUnicode(false);
-
-                entity.Property(e => e.PhotoPath).IsUnicode(false);
-
-                entity.Property(e => e.QrCodePath).IsUnicode(false);
-
-                entity.Property(e => e.QrcodeName).IsUnicode(false);
-
-                entity.Property(e => e.SyncId).HasDefaultValueSql("(newid())");
             });
 
             modelBuilder.Entity<JournalEntry>(entity =>
@@ -1833,6 +1815,8 @@ namespace ttpMiddleware.Models
 
             modelBuilder.Entity<PackageDetail>(entity =>
             {
+                entity.Property(e => e.PackageDetailId).ValueGeneratedNever();
+
                 entity.Property(e => e.Active).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.History).HasDefaultValueSql("((0))");
@@ -1841,7 +1825,11 @@ namespace ttpMiddleware.Models
 
                 entity.Property(e => e.PackagePath).IsUnicode(false);
 
-                entity.Property(e => e.TableName).IsUnicode(false);
+                entity.HasOne(d => d.ConfigTable)
+                    .WithMany(p => p.PackageDetails)
+                    .HasForeignKey(d => d.ConfigTableId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PackageDetail_ConfigTable");
             });
 
             modelBuilder.Entity<Page>(entity =>
